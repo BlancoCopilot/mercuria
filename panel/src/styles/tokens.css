@@ -1,0 +1,59 @@
+:root {
+  /* Color — referencia "cuaderno de campo" */
+  --charcoal: #23212c;
+  --charcoal-70: rgb(35 33 44 / 0.72); /* texto secundario: 7.6:1 sobre paper */
+  --charcoal-20: rgb(35 33 44 / 0.2);
+  --charcoal-10: rgb(35 33 44 / 0.1);
+  --paper: #f7f0e1;
+  --paper-2: #efe5d0;
+  --paper-3: #e6d9be;
+  --snow: #ffffff;
+  --pine: #006434;
+  --marigold: #fcbd1c;
+  --sky: #a6dfff;
+  --ember: #dd5000;
+  --ember-ink: #a83c00; /* ember legible como texto/borde: 5.4:1 sobre paper */
+
+  /* Datos: riesgo (siempre acompañado de texto) */
+  --risk-bajo: #8fbf9a;
+  --risk-medio: #fcbd1c;
+  --risk-alto: #dd5000;
+  --risk-nd: #cfc4ad;
+  --data-green: #2e8a5c; /* serie única en gráficos: validada (banda L, croma, contraste) */
+
+  /* Tipografía */
+  --font: "Inter Variable", "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --text-caption: 12px;
+  --text-body-sm: 14px;
+  --text-body: 16px;
+  --text-sub: 18px;
+  --text-h-sm: 22px;
+  --text-h: 28px;
+  --text-h-lg: 36px;
+  --text-display: 40px;
+
+  /* Espacio */
+  --s-4: 4px; --s-6: 6px; --s-8: 8px; --s-10: 10px; --s-12: 12px; --s-16: 16px;
+  --s-20: 20px; --s-24: 24px; --s-40: 40px; --s-48: 48px; --s-96: 96px;
+
+  /* Forma */
+  --r-chip: 12px;
+  --r-card: 20px;
+  --r-hero: 40px;
+  --r-pill: 99px;
+
+  /* Capas */
+  --z-map-ui: 10;
+  --z-sheet: 20;
+  --z-nav: 30;
+  --z-menu: 40;
+  --z-toast: 50;
+
+  /* Movimiento */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur: 200ms;
+
+  --max: 1280px;
+  --nav-h: 64px;
+  --bar-h: 40px;
+}

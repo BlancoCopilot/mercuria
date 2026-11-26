@@ -1,0 +1,21 @@
+# Solo para desarrollo local. En el VPS NO se copia este archivo
+# (o se usa: docker compose -f docker-compose.yml up -d).
+# Puertos locales movidos: 5432 y 8080 ya los usan otros proyectos en esta Mac.
+x-dev-code: &dev-code
+  - uploads:/data/uploads
+  - ./data/raw:/data/raw:ro
+  - ./backend/rastrohg:/app/rastrohg:ro     # código montado: basta reiniciar, sin rebuild
+  - ./backend/config:/app/config:ro
+
+services:
+  api:
+    ports: ["127.0.0.1:8000:8000"]
+    volumes: *dev-code
+  worker:
+    volumes: *dev-code
+  db:
+    ports: ["127.0.0.1:5433:5432"]
+  caddy:
+    ports: !override ["127.0.0.1:8090:80"]
+    environment:
+      DOMAIN: ":80"          # local: HTTP plano, sin certificado

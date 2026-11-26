@@ -1,0 +1,15 @@
+# Especies de la cuenca y su nivel trófico. Los nombres locales los validan los líderes
+# comunitarios (módulo 9). VERIFICAR con estudios ictiológicos de la cuenca piloto.
+# `factor` (opcional) reemplaza el factor trófico del grupo cuando hay un estudio local de la especie.
+# `nota` (opcional) se muestra en la ficha y la usa el chatbot.
+especies:
+  - {codigo: surubi,   nombre: Surubí,            cientifico: Pseudoplatystoma fasciatum, grupo: carnivoro}
+  - {codigo: dorado,   nombre: Dorado,            cientifico: Brachyplatystoma rousseauxii, grupo: carnivoro}
+  - {codigo: palometa, nombre: Palometa / piraña, cientifico: Pygocentrus nattereri, grupo: carnivoro}
+  - {codigo: benton,   nombre: Bentón,            cientifico: Hoplias malabaricus, grupo: carnivoro}
+  # Estudio UMSA-WCS del río Beni (2025): la yatorana (Brycon amazonicus) salió con concentraciones bajas,
+  # en el mismo grupo que el pacú y el tambaquí. Por eso usa el factor del herbívoro y no el del omnívoro.
+  - {codigo: yatorana, nombre: Yatorana,          cientifico: Brycon amazonicus, grupo: omnivoro, factor: 0.15,
+     nota: "Tiene poca probabilidad de tener mucho mercurio, pero igual tiene un poco: no es cero."}
+  - {codigo: sabalo,   nombre: Sábalo,            cientifico: Prochilodus nigricans, grupo: detritivoro}
+  - {codigo: pacu,     nombre: Pacú,              cientifico: Colossoma macropomum, grupo: herbivoro}

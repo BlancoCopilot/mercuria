@@ -1,0 +1,34 @@
+# Secretos y entorno local
+.env
+.env.*
+!.env.example
+*.pem
+*service-account*.json
+
+# Dependencias y compilados
+backend/.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+panel/node_modules/
+panel/dist/
+.DS_Store
+
+# Datos crudos: grandes o de terceros (se descargan con los comandos de DATOS.md)
+data/raw/*
+!data/raw/.gitkeep
+# … salvo lo curado por el equipo
+!data/raw/mediciones/
+!data/raw/mapbiomas/
+!data/raw/rag/
+data/raw/rag/docs/*
+!data/raw/rag/docs/DOCUMENTOS.md
+!data/raw/geotienda/
+data/raw/geotienda/*
+!data/raw/geotienda/LEEME.md
+data/tiles/*
+!data/tiles/.gitkeep
+
+# Herramientas locales
+.impeccable/
+.claude/

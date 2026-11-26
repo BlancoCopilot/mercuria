@@ -1,0 +1,15 @@
+# Supercronic (formato cron estándar, hora del contenedor = UTC; Bolivia = UTC-4)
+# Amazon Mining Watch: mensual (día 2, 07:00 UTC)
+0 7 2 * *    rastrohg ingest amw
+# OpenStreetMap: mensual (día 3)
+0 7 3 * *    rastrohg ingest osm
+# MapBiomas Bolivia (clase 30, minería): anual (15 de enero)
+0 7 15 1 *   rastrohg ingest mapbiomas
+# Re-evaluar sitios inactivos (sin detección en 2 años) una vez al mes
+0 8 1 * *    rastrohg enqueue-recompute
+# Reintentar notificaciones pendientes
+*/5 * * * *  rastrohg push
+# Respaldo diario fuera del VPS (02:30 hora Bolivia)
+30 6 * * *   /app/scripts/backup.sh
+# Estudios con embargo vencido → datos abiertos y mapa (05:00 hora Bolivia)
+0 9 * * *    rastrohg release-embargoes

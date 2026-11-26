@@ -1,0 +1,32 @@
+# Guía de síntomas para promotores de salud.
+# PENDIENTE: reemplazar por el protocolo oficial del Ministerio de Salud y Deportes.
+# Esto es una estructura de triaje, no un diagnóstico.
+version: "borrador-0.1"
+validado: false
+sintomas:
+  - {codigo: temblor,       texto: "Temblor en manos, párpados o lengua", puntos: 2}
+  - {codigo: hormigueo,     texto: "Hormigueo o adormecimiento en manos, pies o alrededor de la boca", puntos: 2}
+  - {codigo: coordinacion,  texto: "Pérdida de equilibrio o torpeza al caminar", puntos: 2}
+  - {codigo: vision,        texto: "Ve menos por los costados (visión de túnel)", puntos: 2}
+  - {codigo: audicion,      texto: "Dificultad para oír", puntos: 1}
+  - {codigo: memoria,       texto: "Olvidos o dificultad para concentrarse", puntos: 1}
+  - {codigo: animo,         texto: "Irritabilidad, nerviosismo o tristeza sin causa", puntos: 1}
+  - {codigo: debilidad,     texto: "Debilidad muscular o cansancio", puntos: 1}
+  - {codigo: encias,        texto: "Encías inflamadas o sabor metálico", puntos: 1}
+  - {codigo: cefalea,       texto: "Dolor de cabeza frecuente", puntos: 1}
+senales_alarma:   # cualquiera => urgente
+  - {codigo: respiracion,   texto: "Tos fuerte o dificultad para respirar después de quemar amalgama"}
+  - {codigo: convulsion,    texto: "Convulsiones"}
+  - {codigo: confusion,     texto: "Confusión o desmayo"}
+  - {codigo: dolor_pecho,   texto: "Dolor de pecho o fiebre tras inhalar vapores"}
+exposicion:
+  - {codigo: quema_amalgama, texto: "Quema amalgama en casa o cerca", puntos: 2}
+  - {codigo: trabajo_minero, texto: "Trabaja en minería aurífera", puntos: 1}
+  - {codigo: pescado_diario, texto: "Come pescado casi todos los días", puntos: 1}
+reglas:
+  prioritario_si_puntos_desde: 4
+  prioritario_si_embarazo_o_menor5_con_sintomas: true
+recordatorios_dias: [7, 30, 90]
+cabello:
+  referencia_ug_g: 1.0      # valor de referencia usual en población general
+  alto_ug_g: 10.0           # VERIFICAR umbral oficial

@@ -1,0 +1,91 @@
+# RastroHg — un VPS, Docker Compose.
+# Solo Caddy publica puertos (80/443). Base y Redis viven en la red interna.
+# Para desarrollo local (puertos de BD/API en 127.0.0.1) se usa docker-compose.override.yml.
+
+x-app: &app
+  build: ./backend
+  image: rastrohg-backend:latest
+  env_file: .env
+  environment:
+    DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-rastrohg}:${POSTGRES_PASSWORD:?definir en .env}@db:5432/${POSTGRES_DB:-rastrohg}
+    PG_DSN: postgresql://${POSTGRES_USER:-rastrohg}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-rastrohg}
+    REDIS_URL: redis://redis:6379/0
+  volumes:
+    - uploads:/data/uploads
+    - ./data/raw:/data/raw:ro          # archivos de entrada (HydroRIVERS, censo, concesiones, rag/)
+  depends_on:
+    db: { condition: service_healthy }
+    redis: { condition: service_healthy }
+  restart: unless-stopped
+
+services:
+  caddy:
+    image: caddy:2.8
+    ports: ["80:80", "443:443"]
+    environment:
+      DOMAIN: ${DOMAIN:-localhost}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./data/tiles:/srv/tiles:ro       # PMTiles del mapa base (rangos HTTP)
+      - ./panel/dist:/srv/panel:ro       # panel web (fase siguiente)
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on: [api]
+    restart: unless-stopped
+
+  api:
+    <<: *app
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/healthz')"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  worker:
+    <<: *app
+    command: ["rq", "worker", "default", "--url", "redis://redis:6379/0", "--with-scheduler"]
+
+  cron:
+    <<: *app
+    command: ["supercronic", "-no-reap", "/app/crontab"]
+    init: true    # tini como PID 1 recoge procesos; supercronic no necesita hacerlo
+    volumes:
+      - uploads:/data/uploads
+      - ./data/raw:/data/raw:ro
+      - backups:/backups
+
+  db:
+    build: ./db
+    image: rastrohg-db:latest
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-rastrohg}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?definir en .env}
+      POSTGRES_DB: ${POSTGRES_DB:-rastrohg}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d:ro   # esquema: se aplica solo la primera vez
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-rastrohg}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes: [redisdata:/data]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  redisdata:
+  uploads:
+  backups:
+  caddy_data:
+  caddy_config:

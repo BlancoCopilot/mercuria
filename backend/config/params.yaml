@@ -1,0 +1,121 @@
+# Parámetros del motor RastroHg.
+# REGLA: todo valor marcado "VERIFICAR" o "CALIBRAR" es un supuesto inicial.
+# Antes de mostrar resultados a una comunidad hay que contrastarlo con fuentes
+# bolivianas (Evaluación Inicial de Minamata / PAN-MAPE, SENARECOM, MMAyA) y dejar
+# la cita en el campo `fuente`. El motor guarda la versión de este archivo en cada
+# versión del mapa, así cualquier número publicado es trazable.
+version: "2026.11-mvp"
+
+emisiones:
+  # Hg liberado (kg/año) = área activa (ha) × rendimiento de oro (g/ha/año) / 1000
+  #                        × razón Hg:Au (mezcla de técnicas) × factor de actividad
+  rendimiento_au_g_ha_anio:
+    mediana: 150        # CALIBRAR: producción de oro de la cuenca (SENARECOM) / área activa (AMW)
+    gsd: 3.0            # desviación geométrica (lognormal): incertidumbre alta a propósito
+  razon_hg_au:          # kg Hg perdido por kg Au. Distribución triangular. VERIFICAR (Toolkit PNUMA nivel 1)
+    mineral_entero:          {min: 3.0, moda: 5.0, max: 50.0}
+    concentrado_sin_retorta: {min: 1.0, moda: 1.3, max: 2.0}
+    concentrado_con_retorta: {min: 0.1, moda: 0.3, max: 0.6}
+  mezcla_tecnicas_default:   # VERIFICAR con encuestas a cooperativas de la cuenca piloto
+    mineral_entero: 0.2
+    concentrado_sin_retorta: 0.7
+    concentrado_con_retorta: 0.1
+  fraccion_a_agua: {a: 4.5, b: 5.5}   # Beta(a,b), media 0.45: parte que va a ríos/sedimentos (el resto al aire). VERIFICAR
+  muestras_monte_carlo: 2000
+  area_denuncia_sin_poligono_ha: 2.0  # denuncia sin polígono: área supuesta
+  anios_actividad: 2                  # sin detección en este periodo => sitio inactivo
+  factor_inactivo: 0.2                # un sitio inactivo sigue liberando (relaves, removilización)
+
+confianza_fuente:     # peso de cada dato (reto: laboratorio 1, kit 0,5, denuncia 0,2)
+  laboratorio: 1.0
+  publicado: 1.0
+  kit: 0.5
+  denuncia: 0.2
+  satelite: 1.0
+
+matrices:
+  # Un modelo por matriz; nunca se mezclan. Escala log natural:
+  #   ln(C) = β0 + β1·u + residuo espacial en red + error de medición
+  # u = 0 sin minería río arriba, así β0 ≈ ln(fondo).
+  agua:
+    unidad: ug/L                # Hg total
+    referencia: 1.0             # NB 512 agua para consumo: 0,001 mg/L. VERIFICAR versión vigente
+    decaimiento_L_km: 30
+    covariable: balance_masa    # u = ln(1 + k · 0,0317 · carga[kg/año] / caudal[m3/s] / fondo)
+    fondo: 0.005                # ríos amazónicos sin minería ~1–10 ng/L
+    k_columna_agua: 0.1         # fracción de la carga que sigue en la columna de agua. CALIBRAR
+    beta_prior: {media: [null, 1.0], sd: [1.0, 0.3]}   # null => ln(fondo)
+    sigma2: 1.0                 # varianza del proceso espacial (residuos en log)
+    rango_km: 40                # alcance de la correlación a lo largo del río
+    ruido_lab: 0.05             # varianza (log) de una medición de laboratorio
+    vida_media_anios: 5         # un dato de hace 5 años pesa la mitad (el agua refleja la actividad actual)
+    efecto_estacion:            # Hg total húmeda/seca. Beni: 8–19 ng/L estiaje vs 460–1600 en crecida
+      factor: 8                 # (Maurice-Bourgoin et al. 2002, 2003). El mapa se da en promedio geométrico.
+      sd_log: 0.7
+  sedimento:
+    unidad: mg/kg               # peso seco
+    referencia: 0.486           # PEL, guía canadiense CCME (TEL = 0,17)
+    decaimiento_L_km: 80
+    covariable: presion_log     # u = ln(1 + presión / presion_ref_kg)
+    fondo: 0.06
+    presion_ref_kg: 10
+    beta_prior: {media: [null, 0.5], sd: [0.8, 0.3]}   # null => ln(fondo)
+    sigma2: 0.8
+    rango_km: 60
+    ruido_lab: 0.05
+    vida_media_anios: 15        # el sedimento integra décadas de aporte
+  pez:
+    unidad: mg/kg               # peso húmedo, normalizado a "pez carnívoro de referencia"
+    referencia: 0.5             # Codex/OMS 0,5 mg/kg (1,0 para depredadores); se usa el más protector
+    decaimiento_L_km: 100
+    covariable: presion_log
+    fondo: 0.2                  # carnívoros amazónicos sin minería ~0,1–0,4. VERIFICAR
+    presion_ref_kg: 10
+    beta_prior: {media: [null, 0.4], sd: [0.7, 0.3]}
+    sigma2: 0.6
+    rango_km: 80
+    ruido_lab: 0.1
+    vida_media_anios: 8
+    factores_troficos:          # concentración relativa al carnívoro. VERIFICAR con estudios en Beni/Madre de Dios
+      carnivoro: 1.0
+      omnivoro: 0.45
+      detritivoro: 0.2
+      herbivoro: 0.15
+
+ajuste:
+  min_datos_para_ajustar: 10    # con menos datos se usan los hiperparámetros de arriba
+  rangos_km: [10, 20, 40, 80, 160]
+  sigma2: [0.25, 0.5, 1.0, 2.0, 4.0]
+  nugget: [0.0, 0.25, 0.5, 1.0, 2.0]   # variabilidad entre años/métodos en el mismo tramo
+
+riesgo:
+  h3_res: 7                     # ~5 km² por celda
+  anillos_peligro: 1            # la gente usa el río de su celda y de las vecinas
+  decaimiento_anillo: 0.7
+  pesos_peligro: {agua: 1.0, pez: 1.0, sedimento: 0.6}
+  exposicion:
+    poblacion_ref: 200          # E = 1 - exp(-(pob/ref + 0.5·tomas + 0.3·zonas_pesca))
+    peso_toma_agua: 0.5
+    peso_zona_pesca: 0.3
+  vulnerabilidad:
+    piso: 0.25                  # nadie tiene vulnerabilidad cero
+    ref_ninos: 0.12             # proporción de menores de 5 años que se considera "alta"
+    ref_mujeres_fertiles: 0.25
+    ref_comidas_pescado_semana: 7
+    comidas_pescado_default: 3  # si no hay encuesta
+  # Con E·V ≈ 0,7 (comunidad expuesta típica): alto ≈ concentración en el valor de
+  # referencia; medio ≈ 2–3 veces el fondo natural. CALIBRAR con el equipo de salud.
+  umbrales: {medio: 0.5, alto: 0.7}
+  muestras_mc: 400
+  confianza_palida: 0.6         # por debajo: celda pálida = "no sabemos bien"
+  tolerancia: {riesgo: 0.02, confianza: 0.05, log_mu: 0.01}
+
+muestreo:
+  candidatos_max_km_a_poblado: 5   # proxy de accesibilidad
+  k_default: 3
+
+consejo_pescado:                 # VERIFICAR con Ministerio de Salud antes de publicar
+  ingesta_semanal_tolerable_ug_kg: 1.6   # JECFA, metilmercurio
+  fraccion_metil: 0.9
+  porcion_g: {adulto: 150, nino: 75}
+  peso_kg: {adulto: 60, nino: 20}

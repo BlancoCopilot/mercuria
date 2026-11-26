@@ -1,0 +1,39 @@
+# HTTPS automático (Let's Encrypt) con DOMAIN=api.ejemplo.bo en .env.
+# Sin directiva `log`: Caddy no guarda logs de acceso => no quedan IPs de quien denuncia.
+{$DOMAIN} {
+	encode zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options nosniff
+		Referrer-Policy no-referrer
+		-Server
+	}
+
+	@api path /v1/* /media/* /healthz /docs* /openapi.json
+	handle @api {
+		request_body /v1/* {
+			max_size 20MB
+		}
+		reverse_proxy api:8000
+	}
+
+	# PMTiles: file_server soporta peticiones por rangos (el teléfono baja solo lo que necesita)
+	handle_path /tiles/* {
+		header Access-Control-Allow-Origin *
+		header Cache-Control "public, max-age=86400"
+		root * /srv/tiles
+		file_server
+	}
+
+	handle {
+		root * /srv/panel
+		# los archivos con hash no cambian nunca; index.html se revalida siempre
+		@assets path /assets/*
+		header @assets Cache-Control "public, max-age=31536000, immutable"
+		@spa not path /assets/*
+		header @spa Cache-Control "no-cache"
+		try_files {path} /index.html
+		file_server
+	}
+}
