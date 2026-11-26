@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useChat } from "../lib/chat";
 import { ChatThread } from "./ChatThread";
 import { Mascot, type Mood } from "./Mascot";
+import { MascotaAnimada } from "./MascotaAnimada";
 
 // Estado corto (una línea) para la cabecera del widget
 const ESTADO: Record<Mood, string> = {
@@ -72,9 +73,9 @@ export function ChatWidget() {
       {!open && hint && (
         <button className="fab-hint" onClick={abrir}>¿Dudas sobre el mercurio? Pregúntame</button>
       )}
-      <button ref={fab} className="fab" data-open={open} onClick={() => (open ? setOpen(false) : abrir())}
+      <button ref={fab} className="fab fab-pet" data-open={open} onClick={() => (open ? setOpen(false) : abrir())}
         aria-expanded={open} aria-label={open ? "Cerrar chat con Gota" : "Abrir chat: pregúntale a Gota"}>
-        <Mascot mood={open ? mood : "idle"} size={64} label="" />
+        <MascotaAnimada chatAbierto={open} mood={mood} err={err} ocultarGlobo={!open && hint} />
       </button>
     </>
   );
