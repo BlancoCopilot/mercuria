@@ -44,6 +44,24 @@ def cells(db: DbDep, response: Response, since: int = Query(0, description="vers
     return {"version": v, "desde": since, "celdas": cs}
 
 
+@router.get("/zona")
+def zona(db: DbDep, lat: float = Query(ge=-90, le=90), lon: float = Query(ge=-180, le=180)):
+    """Riesgo de la zona (celda H3) de un punto y si hay una zona alta vecina (≈3 km).
+
+    Lo usa el aviso en segundo plano de la app de celular, que no puede calcular la celda H3 por sí
+    mismo: manda la posición redondeada a 2 decimales (~1 km) y no se guarda ni se registra.
+    """
+    cell = cell_of(round(lat, 2), round(lon, 2))
+    ring = [c for c in h3.grid_disk(cell, 1) if c != cell]
+    nivel = {r["h3"]: r["risk_class"] for r in rows(
+        db.conn, "SELECT h3, risk_class FROM cell_risk_current WHERE h3 = ANY(:c)", c=[cell, *ring])}
+    propia = nivel.get(cell)
+    cerca_alto = propia not in ("alto", "medio") and any(nivel.get(c) == "alto" for c in ring)
+    com = one(db.conn, """SELECT name FROM settlement WHERE h3 = ANY(:c)
+                          ORDER BY (h3 = :h) DESC, poblacion DESC NULLS LAST LIMIT 1""", c=[cell, *ring], h=cell)
+    return {"h3": cell, "nivel": propia, "cerca_alto": cerca_alto, "comunidad": com["name"] if com else None}
+
+
 @router.get("/cells/{cell}")
 def cell_detail(cell: str, db: DbDep):
     if not h3.is_valid_cell(cell):

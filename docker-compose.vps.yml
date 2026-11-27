@@ -1,0 +1,8 @@
+# VPS detrás del túnel de Cloudflare (cloudflared → http://localhost:8090). Cloudflare pone el HTTPS;
+# Caddy sirve la web y la API por HTTP y solo en 127.0.0.1 (nada queda expuesto a la red).
+# Uso:  docker compose -f docker-compose.yml -f docker-compose.vps.yml up -d
+services:
+  caddy:
+    ports: !override ["127.0.0.1:8090:80"]
+    environment:
+      DOMAIN: ":80"

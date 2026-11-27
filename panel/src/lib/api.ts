@@ -1,4 +1,10 @@
-// Cliente de la API de RastroHg. Mismo origen (Caddy en producción, proxy de Vite en desarrollo).
+// Cliente de la API de RastroHg. En la web: mismo origen (Caddy en producción, proxy de Vite en desarrollo).
+// En la app de celular (Capacitor) no hay mismo origen: VITE_API_URL trae el servidor (https://...).
+export const API_BASE = (import.meta.env.VITE_API_URL ?? "").replace(/\/$/, "");
+const PLATAFORMA = (import.meta.env.VITE_PLATFORM ?? "web") as "web" | "android";
+
+/** Rutas relativas del servidor (/v1/..., /media/...) a URL completa. */
+export const url = (path: string) => (path.startsWith("/") ? API_BASE + path : path);
 
 export type Rol = "admin" | "laboratorio" | "promotor" | "lider" | "autoridad" | "investigador";
 export type Nivel = "bajo" | "medio" | "alto" | "sin_datos";
@@ -42,7 +48,7 @@ export async function api<T = unknown>(path: string, opts: RequestInit & { auth?
   }
   let res: Response;
   try {
-    res = await fetch(path, { ...opts, headers });
+    res = await fetch(url(path), { ...opts, headers });
   } catch {
     throw new ApiError(0, "Sin conexión con el servidor");
   }
@@ -64,7 +70,7 @@ export async function ensureDevice(): Promise<string> {
   const existing = safeGet(DEVICE_KEY);
   if (existing) return existing;
   const r = await api<{ device_token: string }>("/v1/devices", {
-    method: "POST", auth: false, body: JSON.stringify({ platform: "web", lang: "es" }),
+    method: "POST", auth: false, body: JSON.stringify({ platform: PLATAFORMA, lang: "es" }),
   });
   safeSet(DEVICE_KEY, r.device_token);
   return r.device_token;

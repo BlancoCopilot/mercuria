@@ -6,9 +6,20 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "dev:movil": "VITE_PLATFORM=android vite --config vite.mobile.config.ts",
+    "build:movil": "tsc -b && VITE_PLATFORM=android vite build --config vite.mobile.config.ts && VITE_PLATFORM=android vite build --config vite.runner.config.ts",
+    "apk": "npm run build:movil && cap sync android && cd android && ./gradlew assembleRelease",
+    "apk:debug": "npm run build:movil && cap sync android && cd android && ./gradlew assembleDebug"
   },
   "dependencies": {
+    "@capacitor-community/text-to-speech": "^8.0.2",
+    "@capacitor/android": "^8.6.3",
+    "@capacitor/app": "^8.1.2",
+    "@capacitor/background-runner": "^3.0.0",
+    "@capacitor/core": "^8.6.3",
+    "@capacitor/geolocation": "^8.2.5",
+    "@capacitor/local-notifications": "^8.3.1",
     "@fontsource-variable/inter": "^5.3.0",
     "h3-js": "^4.5.0",
     "maplibre-gl": "^6.19.0",
@@ -17,6 +28,7 @@
     "react-router-dom": "^7.18.7"
   },
   "devDependencies": {
+    "@capacitor/cli": "^8.6.3",
     "@types/geojson": "^7946.0.16",
     "@types/react": "^19.3.3",
     "@types/react-dom": "^19.3.0",

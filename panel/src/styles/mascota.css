@@ -39,6 +39,9 @@
 .gota-globo[data-lado="der"] { right: auto; left: calc(100% + 4px); border-radius: var(--r-card) var(--r-card) var(--r-card) 6px; }
 @keyframes gota-globo-in { from { opacity: 0; transform: translateY(6px) scale(0.96); } }
 
+/* Pantalla de llamada: Gota delante de los anillos */
+.call-avatar .gota-img { position: relative; z-index: 1; }
+
 /* El chat abierto y la invitación se acomodan al nuevo tamaño de Gota */
 @media (min-width: 721px) {
   body:has(.fab-pet) .chat-panel { bottom: 232px; height: min(620px, calc(100dvh - 262px)); }

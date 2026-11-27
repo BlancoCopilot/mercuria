@@ -1,1 +1,9 @@
+*.jks
+android/.gradle
+android/app/build
+android/build
+android/local.properties
+dist-mobile
+keystore.properties
 node_modules
+android-keys/

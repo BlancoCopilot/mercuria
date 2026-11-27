@@ -39,6 +39,16 @@ class Settings(BaseSettings):
     research_max_pdf_mb: int = 40
     research_reasoning_effort: str = "low"        # "medium" tardó 4 min y devolvió JSON duplicado en pruebas
     chat_per_ip_hour: int = 30
+    chat_web_search: bool = True                  # si los documentos no responden, el modelo busca en internet
+
+    # Voz en tiempo real (GPT-Live por WebRTC; el modelo de texto hace la búsqueda en documentos e internet)
+    live_model: str = "gpt-live-1.1"
+    live_voice: str = "luciernaga"                # voces en español: luciernaga, destello (MX); calandria, compas, hornero (AR)
+    live_backend_model: str = ""                  # "" = rag_model
+    live_idle_timeout_s: int = 20                 # tras este silencio la sesión pasa a espera (más barata)
+    live_max_minutes: int = 5                     # el navegador corta la llamada a los N minutos
+    live_per_ip_hour: int = 6
+    live_global_per_hour: int = 60                # tope para toda la app (la clave de OpenAI es una sola)
 
     # Límites anti-abuso
     reports_per_device_hour: int = 20

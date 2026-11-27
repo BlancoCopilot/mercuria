@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="papel">#F7F0E1</color>
+    <color name="pino">#006434</color>
+    <color name="colorPrimary">#006434</color>
+    <color name="colorPrimaryDark">#065233</color>
+    <color name="colorAccent">#FCBD1C</color>
+</resources>

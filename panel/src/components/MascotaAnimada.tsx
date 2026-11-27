@@ -9,6 +9,7 @@ import "../styles/mascota.css";
 //   · chat buscando → laptop · chat respondiendo → hablando · al abrir el chat → saludando
 //   · cambiar de página → camina · /denunciar → sostiene un celular · mapa y fichas → señala
 //   · zona de riesgo alto → se asusta · riesgo medio o error → sorpresa
+//   · llamada por voz → celular mientras escucha, laptop mientras busca, habla cuando responde
 // Otras partes de la app pueden hacerla reaccionar con reaccionar() de lib/mascota.
 // Se puede arrastrar a cualquier parte de la pantalla (recuerda dónde la dejaste).
 
@@ -32,7 +33,7 @@ function dePagina(path: string): { r: Reaccion; fija: boolean; globo?: string | 
 
 interface Evento { r: Reaccion; hasta: number; globo: string | null }
 
-export function MascotaAnimada({ chatAbierto, mood, err, ocultarGlobo }: { chatAbierto: boolean; mood: Mood; err: string | null; ocultarGlobo?: boolean }) {
+export function MascotaAnimada({ chatAbierto, mood, err, llamada = false, ocultarGlobo }: { chatAbierto: boolean; mood: Mood; err: string | null; llamada?: boolean; ocultarGlobo?: boolean }) {
   const loc = useLocation();
   const { zona } = useUbicacion();
   const [evento, setEvento] = useState<Evento | null>(null);
@@ -125,6 +126,8 @@ export function MascotaAnimada({ chatAbierto, mood, err, ocultarGlobo }: { chatA
   const r: Reaccion =
     (arrastrando ? "caminando" : null) ??
     fija ??
+    // en llamada con Gota: escucha con el celular, busca en la laptop, habla contenta
+    (llamada ? (mood === "talking" ? "hablando" : mood === "thinking" ? "laptop" : "celular") : null) ??
     (mood === "thinking" ? "laptop" : mood === "talking" ? "hablando" : null) ??
     (evento && evento.hasta > ahora - 50 ? evento.r : null) ??
     (pagina.fija ? pagina.r : "quieto");
