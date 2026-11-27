@@ -1,0 +1,21 @@
+CHATBOT MERCURIO - Gold4Good
+============================
+
+1. Copia los PDFs de Leonie dentro de la carpeta "docs" (pueden ir en subcarpetas).
+2. Copia "preguntas_frecuentes.csv" aquí, al lado de este archivo
+   (debe tener columnas "pregunta" y "respuesta"; "fuente" y "tema" son opcionales).
+   Si no lo pones, se usan las 30 preguntas de faq.json.
+3. Doble clic en INICIAR.bat
+   - La primera vez instala todo y te pide tu API key.
+   - Se abre el navegador. Ahí: POST /chat -> Try it out -> escribe la pregunta -> Execute.
+4. Si Leonie agrega más PDFs: ponlos en "docs", doble clic en ACTUALIZAR_DOCUMENTOS.bat,
+   y luego vuelve a abrir INICIAR.bat.
+
+Para la app de tu amiga:  http://TU-IP:8000/chat   (las dos compus en el mismo WiFi)
+   Envía: {"pregunta": "¿Qué pescado puedo comer?", "lat": -15.4, "lon": -67.5}
+   Recibe: respuesta, fuentes (documento + página), riesgo, faq_parecida
+
+NO compartas el archivo clave.txt (tiene tu API key).
+
+PROBAR: con INICIAR.bat abierto, doble clic en PROBAR.bat. Hace las 10 preguntas
+de prueba de Leonie y guarda las respuestas en resultados_prueba.txt.

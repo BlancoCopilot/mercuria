@@ -1,0 +1,20 @@
+# Nunca subir la clave de OpenAI
+clave.txt
+.env
+
+# Se generan solos o pesan demasiado para GitHub
+__pycache__/
+.instalado
+indice_vectores.npy
+indice_textos.json
+resultados_prueba.txt
+sql.zip
+sql/chunks_pgvector.sql
+sql/*.db
+sql/*.db-journal
+sql/*.sqlite
+
+# Los PDFs son de otros autores y pesan ~400 MB: se comparten aparte (Drive), no en el repositorio
+docs/*
+!docs/DOCUMENTOS.md
+!docs/temas.json

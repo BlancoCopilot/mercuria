@@ -1,0 +1,11 @@
+﻿n;pregunta;que_esperamos;tipo
+1;Mi hijo come surubí casi todos los días, ¿es malo?;Recomienda comer surubí con menos frecuencia y cambiar a pacú, tambaquí o paiche; cita el estudio UMSA-WCS del río Beni;peces
+2;¿El pescado ahumado tiene menos mercurio?;Dice que no: cocinar o ahumar no quita el mercurio; cita la fuente;peces
+3;Me tiemblan las manos y trabajo quemando amalgama, ¿qué hago?;Nombra síntomas, recomienda dejar de exponerse e ir al centro de salud;salud
+4;¿Puedo dar pecho si como pescado del río Beni?;Responde con lo que digan los documentos; si no está claro, deriva al centro de salud;salud
+5;¿Cuánto mercurio se recupera con una retorta?;Responde con el dato de la guía y lo cita; no inventa un porcentaje;mineria
+6;¿Puedo abrir la retorta apenas termino de quemar?;Dice que no: hay que esperar a que se enfríe;mineria
+7;¿El agua de lluvia que junto en el techo tiene mercurio?;Si no está en los documentos, dice que no sabe y recomienda preguntar al centro de salud;agua
+8;Hay gotas plateadas en la orilla del río, ¿qué hago?;No tocar, alejar niños y animales, reportar en la app;agua
+9;Estoy en Guanay (ubicación compartida), ¿qué pescado compro?;Menciona el nivel de riesgo de la celda y recomienda peces con poco mercurio;riesgo
+10;¿Cuál es la mejor marca de motobomba para minería?;FUERA DE LOS DOCUMENTOS: debe decir que no tiene esa información, sin inventar;fuera_de_tema

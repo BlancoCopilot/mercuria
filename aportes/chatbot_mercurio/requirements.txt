@@ -1,0 +1,6 @@
+pymupdf
+tiktoken
+openai
+numpy
+fastapi
+uvicorn

@@ -1,0 +1,491 @@
+{
+ "_ayuda": "BORRADOR. Cada respuesta debe revisarse contra el PDF de su 'fuente' antes de la demo (y corregir el campo fuente con la página). 'palabras_clave' se usa para la búsqueda sin internet. 'audios' se llena cuando graben a hablantes nativos, ej: {\"aymara\": \"audios/aymara/p01.mp3\"}.",
+ "preguntas": [
+  {
+   "id": "p01",
+   "tema": "salud",
+   "pregunta": "¿Qué es el mercurio y por qué es peligroso?",
+   "respuesta": "El mercurio es un metal líquido y plateado que se usa en la minería de oro para juntar el oro (amalgama). Es tóxico: daña el cerebro, los nervios, los riñones y los pulmones. No se va del cuerpo fácilmente y se acumula con el tiempo.",
+   "palabras_clave": [
+    "mercurio",
+    "azogue",
+    "peligroso",
+    "que es",
+    "toxico"
+   ],
+   "fuente": "OMS, El mercurio y la salud",
+   "audios": {}
+  },
+  {
+   "id": "p02",
+   "tema": "salud",
+   "pregunta": "¿Cómo entra el mercurio a mi cuerpo?",
+   "respuesta": "De dos formas principales: respirando el vapor cuando se quema la amalgama, y comiendo pescado contaminado. En el río el mercurio se transforma en metilmercurio, que se acumula en los peces y pasa a las personas que los comen.",
+   "palabras_clave": [
+    "entra",
+    "cuerpo",
+    "respirar",
+    "vapor",
+    "comer",
+    "pescado",
+    "metilmercurio"
+   ],
+   "fuente": "OMS, El mercurio y la salud",
+   "audios": {}
+  },
+  {
+   "id": "p03",
+   "tema": "salud",
+   "pregunta": "¿Qué síntomas da el mercurio?",
+   "respuesta": "Puede causar temblores en las manos, hormigueo o adormecimiento en manos, pies o alrededor de la boca, dolor de cabeza, olvidos, cambios de humor, problemas para dormir, y problemas de vista, oído o coordinación. Muchas veces no hay síntomas al inicio. Si tienes alguno, ve al centro de salud.",
+   "palabras_clave": [
+    "sintomas",
+    "temblor",
+    "hormigueo",
+    "dolor de cabeza",
+    "memoria",
+    "olvido",
+    "adormecimiento",
+    "tiemblan",
+    "tiembla",
+    "manos",
+    "nervios"
+   ],
+   "fuente": "OMS, El mercurio y la salud",
+   "audios": {}
+  },
+  {
+   "id": "p04",
+   "tema": "salud",
+   "pregunta": "¿Por qué las mujeres embarazadas y los niños deben cuidarse más?",
+   "respuesta": "El mercurio pasa de la madre al bebé durante el embarazo y por la leche, y puede dañar el desarrollo del cerebro del bebé. Los niños pequeños también son más sensibles. Las embarazadas y los niños deben evitar los peces grandes carnívoros y estar lejos de la quema de amalgama.",
+   "palabras_clave": [
+    "embarazada",
+    "embarazo",
+    "bebe",
+    "niño",
+    "niños",
+    "lactancia",
+    "leche materna"
+   ],
+   "fuente": "OMS, El mercurio y la salud",
+   "audios": {}
+  },
+  {
+   "id": "p05",
+   "tema": "peces",
+   "pregunta": "¿Qué pescado puedo comer?",
+   "respuesta": "Los peces que comen plantas o frutos, como el pacú y el sábalo, tienen menos mercurio. Los peces grandes que comen otros peces, como el surubí, el pintado y el dorado, acumulan mucho más. Prefiere peces pequeños y no carnívoros, y varía tu comida.",
+   "palabras_clave": [
+    "pescado",
+    "pez",
+    "comer",
+    "pacu",
+    "sabalo",
+    "surubi",
+    "pintado",
+    "dorado",
+    "cual",
+    "que pescado",
+    "seguro comer",
+    "puedo comer"
+   ],
+   "fuente": "UMSA y WCS (2024), mercurio en peces de Rurrenabaque",
+   "audios": {}
+  },
+  {
+   "id": "p06",
+   "tema": "peces",
+   "pregunta": "¿Por qué el surubí y otros peces grandes tienen más mercurio?",
+   "respuesta": "Porque comen otros peces y viven más años. Cada pez que comen trae un poco de mercurio, y ese mercurio se va sumando en su cuerpo. Por eso los peces grandes y carnívoros tienen más que los peces pequeños.",
+   "palabras_clave": [
+    "surubi",
+    "grande",
+    "carnivoro",
+    "por que",
+    "mas mercurio"
+   ],
+   "fuente": "Maurice-Bourgoin et al. (2001), IRD",
+   "audios": {}
+  },
+  {
+   "id": "p07",
+   "tema": "peces",
+   "pregunta": "¿Si cocino o hiervo bien el pescado se le quita el mercurio?",
+   "respuesta": "No. El mercurio está dentro de la carne del pescado y no se va al cocinar, hervir, freír, ahumar ni salar. La única forma de reducirlo es elegir peces con menos mercurio y comerlos con menos frecuencia.",
+   "palabras_clave": [
+    "cocinar",
+    "hervir",
+    "freir",
+    "ahumar",
+    "quitar",
+    "limpiar pescado"
+   ],
+   "fuente": "OMS, El mercurio y la salud",
+   "audios": {}
+  },
+  {
+   "id": "p08",
+   "tema": "peces",
+   "pregunta": "¿Debo dejar de comer pescado?",
+   "respuesta": "No necesariamente. El pescado es un alimento muy nutritivo. Lo importante es elegir peces con menos mercurio (no carnívoros y pequeños), no comer peces grandes carnívoros muy seguido, y tener más cuidado con embarazadas y niños.",
+   "palabras_clave": [
+    "dejar",
+    "pescado",
+    "dejar de comer",
+    "nutritivo",
+    "seguro"
+   ],
+   "fuente": "Heliyon (2022), consumo de pescado en Riberalta y Rurrenabaque",
+   "audios": {}
+  },
+  {
+   "id": "p09",
+   "tema": "agua",
+   "pregunta": "¿Puedo tomar el agua del río?",
+   "respuesta": "En los ríos, el mercurio se queda sobre todo en el barro del fondo y en los peces, más que en el agua. Pero el agua de un río con minería puede tener otros contaminantes y barro. Es mejor tomar agua de pozo o de red, o hervirla y filtrarla. Hervir no quita el mercurio.",
+   "palabras_clave": [
+    "agua",
+    "tomar",
+    "beber",
+    "rio",
+    "hervir",
+    "potable"
+   ],
+   "fuente": "Maurice-Bourgoin et al. (2001), IRD",
+   "audios": {}
+  },
+  {
+   "id": "p10",
+   "tema": "agua",
+   "pregunta": "¿Cómo llega el mercurio de la mina al río?",
+   "respuesta": "Cuando se lava el material amalgamado y se botan las colas o relaves cerca del río, el mercurio se va con el agua. También el vapor de la quema cae con la lluvia. Las dragas en el río remueven el fondo y sueltan mercurio y barro.",
+   "palabras_clave": [
+    "llega",
+    "rio",
+    "cola",
+    "relave",
+    "draga",
+    "lluvia"
+   ],
+   "fuente": "PNUMA, Guía práctica para reducir el mercurio en la minería aurífera artesanal",
+   "audios": {}
+  },
+  {
+   "id": "p11",
+   "tema": "mineria",
+   "pregunta": "¿Qué es una retorta?",
+   "respuesta": "Es un recipiente de metal cerrado donde se calienta la amalgama. El vapor de mercurio no sale al aire: se enfría en un tubo y vuelve a ser líquido para usarlo otra vez. Así proteges tu salud y gastas menos mercurio.",
+   "palabras_clave": [
+    "retorta",
+    "que es",
+    "recuperar",
+    "reutilizar"
+   ],
+   "fuente": "PNUMA, Guía práctica para reducir el mercurio en la minería aurífera artesanal",
+   "audios": {}
+  },
+  {
+   "id": "p12",
+   "tema": "mineria",
+   "pregunta": "¿Cómo uso una retorta?",
+   "respuesta": "1) Pon la amalgama en el recipiente, cubierta con papel o una capa delgada. 2) Cierra bien la tapa. 3) Pon el extremo del tubo dentro de un recipiente con agua fría. 4) Calienta despacio, al aire libre. 5) Deja enfriar por completo antes de abrir. Nunca abras la retorta caliente.",
+   "palabras_clave": [
+    "retorta",
+    "como usar",
+    "pasos",
+    "calentar",
+    "abrir"
+   ],
+   "fuente": "PNUMA, Guía práctica para reducir el mercurio en la minería aurífera artesanal",
+   "audios": {}
+  },
+  {
+   "id": "p13",
+   "tema": "mineria",
+   "pregunta": "¿Es peligroso quemar la amalgama al aire libre o en la cocina?",
+   "respuesta": "Sí, es la forma más peligrosa de exposición. El vapor de mercurio no se ve ni se huele bien, y quien lo respira se intoxica, igual que la familia cercana. Nunca quemes amalgama en casa ni en la cocina. Usa una retorta y aléjate de niños y embarazadas.",
+   "palabras_clave": [
+    "quemar",
+    "quema",
+    "amalgama",
+    "cocina",
+    "casa",
+    "vapor",
+    "soplete"
+   ],
+   "fuente": "OMS, El mercurio y la salud",
+   "audios": {}
+  },
+  {
+   "id": "p14",
+   "tema": "mineria",
+   "pregunta": "¿Cómo puedo usar menos mercurio en la minería?",
+   "respuesta": "Primero concentra el oro (con canaletas, bateas o mesas) y amalgama solo el concentrado, no todo el material. Usa retorta para recuperar el mercurio. No botes las colas con mercurio al río. Existen métodos sin mercurio que tu cooperativa puede averiguar.",
+   "palabras_clave": [
+    "menos mercurio",
+    "reducir",
+    "concentrar",
+    "concentrado",
+    "buenas practicas",
+    "sin mercurio"
+   ],
+   "fuente": "PNUMA, Guía práctica para reducir el mercurio en la minería aurífera artesanal",
+   "audios": {}
+  },
+  {
+   "id": "p15",
+   "tema": "mineria",
+   "pregunta": "¿Por qué no debo amalgamar todo el mineral?",
+   "respuesta": "Porque así se usa muchísimo mercurio y la mayor parte se pierde en las colas y en el río. Si primero concentras el oro, necesitas mucho menos mercurio y contaminas menos. Amalgamar todo el mineral está entre las prácticas que el Convenio de Minamata pide eliminar.",
+   "palabras_clave": [
+    "amalgamar todo",
+    "mineral completo",
+    "minamata",
+    "practica"
+   ],
+   "fuente": "PNUMA, Guía práctica para reducir el mercurio en la minería aurífera artesanal",
+   "audios": {}
+  },
+  {
+   "id": "p16",
+   "tema": "mineria",
+   "pregunta": "¿Qué hago con las colas o relaves que tienen mercurio?",
+   "respuesta": "No los botes al río ni cerca del agua. Guárdalos en un lugar seco, alejado del río y de las casas, y si se puede cubiertos. Repórtalos en la app para que las autoridades puedan priorizar su remediación.",
+   "palabras_clave": [
+    "colas",
+    "relaves",
+    "desmonte",
+    "residuos",
+    "botar",
+    "guardar"
+   ],
+   "fuente": "PNUMA, Guía práctica para reducir el mercurio en la minería aurífera artesanal",
+   "audios": {}
+  },
+  {
+   "id": "p17",
+   "tema": "mineria",
+   "pregunta": "¿Cómo me protejo si trabajo con mercurio?",
+   "respuesta": "No toques el mercurio con las manos: usa guantes. Trabaja al aire libre y con el viento a tu espalda. Lávate las manos antes de comer. Cámbiate la ropa de trabajo antes de entrar a casa. No guardes mercurio donde duermes o cocinas.",
+   "palabras_clave": [
+    "proteger",
+    "guantes",
+    "ropa",
+    "manos",
+    "trabajo",
+    "minero"
+   ],
+   "fuente": "PNUMA, Guía práctica para reducir el mercurio en la minería aurífera artesanal",
+   "audios": {}
+  },
+  {
+   "id": "p18",
+   "tema": "mineria",
+   "pregunta": "¿Puedo usar las ollas de la cocina para el mercurio?",
+   "respuesta": "No. Las ollas, bateas o recipientes que tocaron mercurio ya no deben usarse para cocinar ni para guardar comida o agua. Usa herramientas solo para el trabajo minero.",
+   "palabras_clave": [
+    "olla",
+    "cocina",
+    "recipiente",
+    "utensilios",
+    "bateas"
+   ],
+   "fuente": "PNUMA, Guía práctica para reducir el mercurio en la minería aurífera artesanal",
+   "audios": {}
+  },
+  {
+   "id": "p19",
+   "tema": "salud",
+   "pregunta": "¿Qué hago si se derrama mercurio en mi casa?",
+   "respuesta": "Saca a los niños y abre las ventanas. No uses escoba ni aspiradora, porque esparcen el mercurio. Junta las gotas con cartón o cinta adhesiva, ponlas en un frasco cerrado con agua y no lo botes al desagüe ni a la basura común. Pide ayuda al centro de salud o al municipio.",
+   "palabras_clave": [
+    "derrame",
+    "derramo",
+    "casa",
+    "gotas",
+    "limpiar",
+    "escoba",
+    "cayo",
+    "se cayo",
+    "rompio",
+    "termometro"
+   ],
+   "fuente": "OMS, El mercurio y la salud",
+   "audios": {}
+  },
+  {
+   "id": "p20",
+   "tema": "salud",
+   "pregunta": "¿Cómo sé si tengo mercurio en el cuerpo?",
+   "respuesta": "Solo con un análisis de laboratorio. El análisis de cabello muestra el mercurio que viene de comer pescado; el de orina muestra el que viene de respirar vapor. Pregunta en tu centro de salud para que te deriven.",
+   "palabras_clave": [
+    "analisis",
+    "examen",
+    "cabello",
+    "pelo",
+    "orina",
+    "sangre",
+    "saber"
+   ],
+   "fuente": "OMS, El mercurio y la salud",
+   "audios": {}
+  },
+  {
+   "id": "p21",
+   "tema": "salud",
+   "pregunta": "¿El daño por mercurio tiene cura?",
+   "respuesta": "Algunos daños pueden mejorar si se deja de estar expuesto, pero otros, sobre todo en el cerebro de los bebés, pueden ser permanentes. Por eso lo más importante es prevenir. Si crees que estás expuesto, ve al centro de salud.",
+   "palabras_clave": [
+    "cura",
+    "tratamiento",
+    "curar",
+    "permanente",
+    "remedio"
+   ],
+   "fuente": "OMS, El mercurio y la salud",
+   "audios": {}
+  },
+  {
+   "id": "p22",
+   "tema": "salud",
+   "pregunta": "¿Hay remedios caseros para sacar el mercurio del cuerpo?",
+   "respuesta": "No hay remedios caseros comprobados para sacar el mercurio. No tomes nada sin consultar. El tratamiento lo decide un médico. Ve al centro de salud.",
+   "palabras_clave": [
+    "remedio casero",
+    "hierbas",
+    "sacar",
+    "desintoxicar",
+    "limpiar cuerpo"
+   ],
+   "fuente": "OMS, El mercurio y la salud",
+   "audios": {}
+  },
+  {
+   "id": "p23",
+   "tema": "salud",
+   "pregunta": "¿Las comunidades del río Beni tienen mercurio en el cuerpo?",
+   "respuesta": "Varios estudios en la cuenca del Beni encontraron niveles de mercurio en el cabello de personas ribereñas e indígenas, en muchos casos por encima de lo recomendado, sobre todo en quienes comen mucho pescado.",
+   "palabras_clave": [
+    "beni",
+    "comunidades",
+    "estudio",
+    "indigenas",
+    "ribereños",
+    "cabello"
+   ],
+   "fuente": "Valdivieso et al. (2025), metaanálisis de mercurio en la cuenca del Beni",
+   "audios": {}
+  },
+  {
+   "id": "p24",
+   "tema": "agua",
+   "pregunta": "¿Qué señales muestran que un río está contaminado por la minería?",
+   "respuesta": "Agua muy turbia o de color café todo el año, menos peces o peces muertos, dragas o balsas trabajando, montones de arena y colas en la orilla, y humo de quema de amalgama cerca. El mercurio no siempre se ve: solo un análisis lo confirma.",
+   "palabras_clave": [
+    "señales",
+    "rio",
+    "contaminado",
+    "turbio",
+    "peces muertos",
+    "dragas"
+   ],
+   "fuente": "PNUMA, Guía práctica para reducir el mercurio en la minería aurífera artesanal",
+   "audios": {}
+  },
+  {
+   "id": "p25",
+   "tema": "mineria",
+   "pregunta": "¿Dónde puedo denunciar contaminación con mercurio?",
+   "respuesta": "Puedes reportarlo en esta app, incluso sin internet y sin dar tu nombre. Los reportes se ordenan por prioridad y se envían a las autoridades: la AJAM (minería), el Ministerio de Medio Ambiente y Agua, la Gobernación, el SERNAP en áreas protegidas y la FELCDA (policía ambiental).",
+   "palabras_clave": [
+    "denunciar",
+    "reportar",
+    "denuncia",
+    "ajam",
+    "felcda",
+    "autoridad"
+   ],
+   "fuente": "Equipo Gold4Good",
+   "audios": {}
+  },
+  {
+   "id": "p26",
+   "tema": "mineria",
+   "pregunta": "¿Mis datos están protegidos si reporto?",
+   "respuesta": "Sí. Puedes reportar de forma anónima o a través de un aliado local, como tu municipio, la defensoría o un comité ambiental. La app no pide carnet de identidad.",
+   "palabras_clave": [
+    "anonimo",
+    "datos",
+    "nombre",
+    "carnet",
+    "represalias",
+    "seguro"
+   ],
+   "fuente": "Equipo Gold4Good",
+   "audios": {}
+  },
+  {
+   "id": "p27",
+   "tema": "mineria",
+   "pregunta": "¿Qué es el Convenio de Minamata?",
+   "respuesta": "Es un acuerdo internacional para proteger la salud y el ambiente del mercurio. Bolivia es parte del convenio. Pide reducir y, cuando se pueda, eliminar el uso de mercurio en la minería de oro artesanal.",
+   "palabras_clave": [
+    "minamata",
+    "convenio",
+    "ley",
+    "acuerdo",
+    "internacional"
+   ],
+   "fuente": "PNUMA, Convenio de Minamata",
+   "audios": {}
+  },
+  {
+   "id": "p28",
+   "tema": "mineria",
+   "pregunta": "¿El oro que vendo puede tener mercurio?",
+   "respuesta": "Sí. El oro quemado sin retorta suele guardar algo de mercurio. Cuando las tiendas o compradores lo funden, vuelven a soltar vapor. Usar retorta y quemar bien al aire libre reduce este problema.",
+   "palabras_clave": [
+    "oro",
+    "vender",
+    "comprador",
+    "tienda",
+    "fundir",
+    "esponja"
+   ],
+   "fuente": "PNUMA, Guía práctica para reducir el mercurio en la minería aurífera artesanal",
+   "audios": {}
+  },
+  {
+   "id": "p29",
+   "tema": "salud",
+   "pregunta": "¿Puedo dar de lactar si estoy expuesta al mercurio?",
+   "respuesta": "La leche materna sigue siendo muy importante para el bebé. Pero si trabajas con mercurio o comes mucho pescado carnívoro, consulta en el centro de salud. Evita respirar vapor de quema y elige peces con menos mercurio.",
+   "palabras_clave": [
+    "lactar",
+    "lactancia",
+    "leche materna",
+    "dar pecho",
+    "bebe"
+   ],
+   "fuente": "OMS, El mercurio y la salud",
+   "audios": {}
+  },
+  {
+   "id": "p30",
+   "tema": "peces",
+   "pregunta": "¿Los peces de mi zona tienen mucho mercurio?",
+   "respuesta": "Depende de la especie y del lugar. Si compartes tu ubicación, la app te muestra el nivel de riesgo de tu zona. En general, cerca de zonas mineras los peces grandes carnívoros son los que más mercurio tienen.",
+   "palabras_clave": [
+    "mi zona",
+    "aqui",
+    "peces",
+    "lugar",
+    "riesgo",
+    "ubicacion"
+   ],
+   "fuente": "UMSA y WCS (2024), mercurio en peces de Rurrenabaque",
+   "audios": {}
+  }
+ ]
+}
