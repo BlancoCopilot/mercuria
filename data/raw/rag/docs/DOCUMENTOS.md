@@ -47,3 +47,32 @@ El OCR tiene errores menores (por ejemplo "10" en vez de "lo", "denames" en vez 
 - `referencia/`: material del equipo que NO va al chatbot (guías ORO-4.1 y 4.2, notas de la app, planilla de inputs, mapas en PNG, recursos audiovisuales).
 - `mapas/`: capa de ríos (22 289 tramos) y de áreas mineras de Bolivia (7 979, con su titular). Ver `mapas/LEEME.md`.
 - `preguntas_frecuentes.csv` y `preguntas_prueba.csv`: en la carpeta principal.
+
+## Por descargar (agregado 26/11/2026)
+
+Las preguntas frecuentes nuevas (19, de la 32 a la 50) ya citan estos archivos con el nombre de la primera columna. Descarguen cada uno, guárdenlo en `docs/` con ese nombre, agréguenlo a `temas.json` y vuelvan a correr `ingestar.py`. Si una página web no es un PDF, usen "Imprimir > Guardar como PDF" en el navegador.
+
+| Archivo | Documento | Tema | Enlace |
+|---|---|---|---|
+| acha_peces_beni_jfca_2026.pdf | Loayza, Peñarrieta, Achá y Miranda-Chumacero: *Balancing nutrients and mercury* (2026), los 10 peces del río Beni. Acceso abierto según el portal de la UMSA | peces | https://doi.org/10.1016/j.jfca.2025.108840 |
+| umsa_metaanalisis_mercurio_beni_2025.pdf | Valdivieso, Bravo y Yapu (IIQ-UMSA): metaanálisis del mercurio en agua, sedimentos y cabello en la cuenca del Beni, 1995-2024. Revista Boliviana de Química 42(2) | salud / agua | https://bolivianchemistryjournaliiq.umsa.bo/wp-content/uploads/2025/12/6.-nMercuryBeniRiver-Valdivieso2025.pdf |
+| umsa_tesis_mercurio_madres_ninos_beni.pdf | UMSA: exposición a mercurio de 174 madres y 450 niños de 15 comunidades del río Beni | salud | https://repositorio.umsa.bo/xmlui/handle/123456789/173 |
+| umsa_seladis_mercurio_adn_2026.pdf | Noticia UMSA (28/04/2026): estudio SELADIS sobre daño en sangre, hígado y ADN (guardar la página como PDF) | salud | https://www.umsa.bo/umsa-noticias-destacadas/-/asset_publisher/UusyASHyolnR/content/el-costo-oculto-del-oro-umsa-alerta-consecuencias-en-la-salud-y-el-adn-de-indigenas-de-la-amazonia-por-el-mercurio/20142 |
+| ird_umsa_mercurio_bolivia_2001.pdf | Maurice-Bourgoin (IRD) con el IIQ y el Instituto de Ecología de la UMSA (2001): libro sobre el mercurio en la Amazonía boliviana | agua / peces | https://horizon.documentation.ird.fr/exl-doc/pleins_textes/doc34-04/010025628.pdf |
+| ley_759_minamata.pdf | Ley 759 (17/11/2015): Bolivia ratifica el Convenio de Minamata | normas | https://diputados.gob.bo/wp-content/uploads/Leyes/Ley_N_0759.pdf |
+| ds_4959_rume_mercurio.pdf | Decreto Supremo 4959 (14/06/2023): Registro Único de Mercurio y autorización previa | normas | https://faolex.fao.org/docs/pdf/bol222510.pdf |
+| cedib_analisis_ds4959.pdf | CEDIB (Campanini): *Empujando al Estado para abordar el problema del mercurio* | normas | https://www.cedib.org/wp-content/uploads/2023/04/EMPUJANDO-AL-ESTADO-PARA-ABORDAR-EL-PROBLEMA-DEL-MERCURIO-OK.pdf |
+| defensoria_rutas_denuncia_ambiental.pdf | Defensoría del Pueblo: cartilla de rutas de denuncia ambiental (Ley 1333, Código Penal) | normas | https://www.defensoria.gob.bo/uploads/files/cartilla-rutas-de-denuncia-y-gobernanza-final.pdf |
+| ley_548_codigo_nna.pdf | Ley 548, Código Niña, Niño y Adolescente (trabajos prohibidos, art. 136) | normas | https://media.unesco.org/sites/default/files/webform/r2e002/ab5f0ee4dc8dec8c726a154eb3acfac84763e2df.pdf |
+| planetgold_cartilla_comercializacion_oro.pdf | planetGOLD: cartilla de comercialización de oro responsable (requisitos para vender al BCB) | mineria | https://www.planetgold.org/sites/default/files/Cartilla%20Curso%20de%20Comrcializaci%C3%B3n%20de%20Oro%20Responsable%20FINAL.pdf |
+| planetgold_folleto_bolivia.pdf | planetGOLD Bolivia: folleto informativo (5 distritos, meta de 18 t) | mineria | https://www.planetgold.org/sites/default/files/Folleto%20Informativo.pdf |
+| ipen_bolivia_mape_2025.pdf | IPEN (2025): situación del mercurio en la minería de oro en Bolivia, en español | mineria / normas | https://ipen.org/sites/default/files/documents/bolivia_asgm_span_2025.pdf |
+
+Fuentes de salud usadas en las preguntas 39 a 42 (vitaminas, quelantes y castaña). Son páginas web en inglés o portugués, así que basta con su cita:
+
+- NIH, Oficina de Suplementos Dietéticos: selenio, vitamina C y vitamina D (límites máximos diarios).
+- McKay (2013) y Kosnett (2013), *Journal of Medical Toxicology*: la quelación solo debe indicarla un médico.
+- Agência FAPESP: estudio de la USP sobre selenio y mercurio en ribereños del Pará.
+- Lemire y otros (2010): selenio de la castaña en la dieta de ribereños del Tapajós.
+
+**Ojo con la recomendación de la docente:** "vitamina C y D, 1 g" solo cabe para la vitamina C (el límite es 2 g al día). Un gramo de vitamina D equivale a 40 millones de UI, una dosis tóxica (el límite es 4000 UI). La pregunta 40 ya lo explica.
