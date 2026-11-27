@@ -25,9 +25,37 @@ export interface Recurso {
   resumen?: string;
 }
 
-// ── Videos de personas contando sus relatos ────────────────────────────
+// ── Nuestro video (archivo propio, en panel/public/videos/) ────────────
+export const VIDEO_PROPIO = {
+  titulo: "¿Cómo nos afecta el mercurio?",
+  resumen: "Gota te cuenta en dos minutos cómo el mercurio del oro llega al río y al pescado, y cómo MercurIA te ayuda a cuidarte.",
+  src: "videos/mercuria-resumen.mp4",
+  poster: "videos/mercuria-resumen.jpg",
+  duracion: "1:58",
+  youtube: "", // pegar aquí el link cuando el video esté subido al canal
+};
+
+// ── Canal de YouTube de MercurIA ───────────────────────────────────────
+export const CANAL_YOUTUBE = { url: "https://www.youtube.com/@mercuria-p9e", usuario: "@mercuria-p9e" };
+
+// ── Videos de personas contando sus relatos y reportajes ───────────────
 export const RELATOS: Relato[] = [
-  // { titulo: "…", quien: "…", lugar: "…", url: "https://www.youtube.com/watch?v=…", resumen: "…" },
+  {
+    titulo: "El oro tóxico: el mercurio de la minería contamina el río Beni y amenaza a 164 comunidades indígenas",
+    quien: "Te Lo Cuenta Víctor Hugo",
+    lugar: "Río Beni",
+    url: "https://youtu.be/tuQSZQ7aRLU",
+  },
+  {
+    titulo: "Contaminación con mercurio en Bolivia",
+    quien: "DW Español",
+    url: "https://youtu.be/I_3HqQ0UB8c",
+  },
+  {
+    titulo: "Bolivia: The Killer Gold",
+    quien: "ARTE.tv Documentales",
+    url: "https://youtu.be/PKMEgyMeDpc",
+  },
 ];
 
 // ── Textos para leer ───────────────────────────────────────────────────
@@ -42,6 +70,12 @@ export const RECURSOS: Recurso[] = [
 
 /** Si el link es de YouTube, devuelve la dirección para verlo dentro de la página. */
 export function embedDe(url: string): string | null {
+  const id = youtubeId(url);
+  return id ? `https://www.youtube-nocookie.com/embed/${id}` : null;
+}
+
+/** Identificador del video si el link es de YouTube (youtu.be, watch, embed, shorts, live). */
+export function youtubeId(url: string): string | null {
   try {
     const u = new URL(url);
     const host = u.hostname.replace(/^www\.|^m\./, "");
@@ -51,7 +85,7 @@ export function embedDe(url: string): string | null {
       if (u.pathname === "/watch") id = u.searchParams.get("v");
       else { const m = u.pathname.match(/^\/(embed|shorts|live)\/([\w-]+)/); id = m ? m[2] : null; }
     }
-    return id && /^[\w-]{6,}$/.test(id) ? `https://www.youtube-nocookie.com/embed/${id}` : null;
+    return id && /^[\w-]{6,}$/.test(id) ? id : null;
   } catch {
     return null;
   }
