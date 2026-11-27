@@ -54,7 +54,7 @@ export function ChatWidget() {
       {open && (
         <div ref={panel} className="chat-panel" role="dialog" aria-modal="false" aria-label="Chat con Gota">
           <header className="chat-panel-head">
-            <GotaImg mood={mood} size={62} err={!!err} />
+            <GotaImg mood={mood} size={76} err={!!err} />
             <div className="chat-panel-title">
               <strong>Gota</strong>
               <span className="small muted" aria-live="polite">{err ? "Uy, no pude responder." : ESTADO[mood]}</span>

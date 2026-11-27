@@ -13,7 +13,7 @@ export default function ChatPage() {
       </PageHead>
       <div className="chat-layout">
         <aside className="chat-host" aria-live="polite">
-          <GotaImg mood={mood} size={170} err={!!err} />
+          <GotaImg mood={mood} size={220} err={!!err} />
           <p className="host-bubble">{err ? "Uy, no pude responder. Intenta de nuevo." : BURBUJA[mood]}</p>
         </aside>
         <ChatThread />

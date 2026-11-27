@@ -52,7 +52,7 @@ export function ChatThread({ compact, autoFocus }: { compact?: boolean; autoFocu
             <div key={i} className="msg msg-user">{t.texto}</div>
           ) : (
             <div key={i} className="msg-row">
-              <span className="avatar"><GotaImg size={compact ? 34 : 42} label="Gota" still /></span>
+              <span className="avatar"><GotaImg size={compact ? 40 : 50} label="Gota" still /></span>
               <div className="msg msg-bot">
                 {t.texto}
                 {t.fuentes && t.fuentes.length > 0 && (
@@ -69,7 +69,7 @@ export function ChatThread({ compact, autoFocus }: { compact?: boolean; autoFocu
           ))}
           {busy && (
             <div className="msg-row">
-              <span className="avatar"><GotaImg size={compact ? 34 : 42} mood="thinking" label="Gota pensando" /></span>
+              <span className="avatar"><GotaImg size={compact ? 40 : 50} mood="thinking" label="Gota pensando" /></span>
               <div className="msg msg-bot"><span className="skeleton" style={{ display: "block", width: 160, height: 14 }} /></div>
             </div>
           )}
