@@ -52,9 +52,11 @@ def main(argv: list[str] | None = None) -> None:
     ri = sub.add_parser("rag-ingest", help="carga PDFs y preguntas frecuentes al chatbot RAG")
     ri.add_argument("path", help="carpeta con docs/*.pdf, docs/temas.json y preguntas_frecuentes.csv")
     ri.add_argument("--force", action="store_true", help="re-procesa aunque el archivo no haya cambiado")
+    ri.add_argument("--imagenes", action="store_true",
+                    help="también describe y vectoriza las figuras de los PDFs (usa el modelo de visión de OpenAI)")
     ra = sub.add_parser("rag-ask", help="pregunta al chatbot desde la terminal")
     ra.add_argument("pregunta")
-    ra.add_argument("--tema", choices=["peces", "salud", "mineria", "agua"])
+    ra.add_argument("--tema", choices=["peces", "salud", "mineria", "agua", "normas", "historia", "relaves", "retorta"])
     ra.add_argument("--solo-buscar", action="store_true", help="muestra los fragmentos, sin llamar a OpenAI")
     ra.add_argument("--lat", type=float)
     ra.add_argument("--lon", type=float)
@@ -133,7 +135,7 @@ def main(argv: list[str] | None = None) -> None:
         _print({"job": request_recompute("cron")})
     elif a.cmd == "rag-ingest":
         from .rag.ingest import ingest_dir
-        _print(ingest_dir(a.path, a.force))
+        _print(ingest_dir(a.path, a.force, a.imagenes))
     elif a.cmd == "rag-ask":
         from .rag.chat import answer, zone_card
         from .rag.search import search

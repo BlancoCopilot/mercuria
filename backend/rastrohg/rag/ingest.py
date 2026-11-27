@@ -7,6 +7,10 @@ Estructura esperada de la carpeta (la del paquete Gold4Good_RAG_contenido):
     <dir>/preguntas_frecuentes.csv separado por ';' (opcional)
 
 Idempotente: un documento cuyo sha256 no cambió no se vuelve a procesar.
+
+Con images=True (rag-ingest --imagenes) también se vectorizan las figuras de cada PDF: un modelo
+de visión las describe (ver images.py) y la descripción entra como un fragmento más de su página.
+Las descripciones quedan en <dir>/imagenes_descripciones.json para revisarlas y no volver a pagarlas.
 """
 from __future__ import annotations
 
@@ -158,13 +162,28 @@ def _store(conn: Connection, filename: str, title: str, kind: str, tema: str | N
     return len(items)
 
 
-def ingest_dir(root: str | Path, force: bool = False) -> dict:
+def merge_figures(text_chunks: list[Chunk], figures: list[tuple[int, str, str]], title: str) -> list[Chunk]:
+    """Intercala las figuras después del texto de su página: así el fragmento vecino de una figura
+    es el texto que la rodea (expand() trae los vecinos por orden)."""
+    figs = [Chunk(f"Figura de la página {page} de «{title}»: {desc}", page, {"figura": True, "imagen_sha": sha[:16]})
+            for page, desc, sha in figures]
+    merged = text_chunks + figs
+    return sorted(merged, key=lambda c: (c.page or 0, bool(c.meta.get("figura"))))  # sort estable
+
+
+def ingest_dir(root: str | Path, force: bool = False, images: bool = False) -> dict:
     root = Path(root)
     docs = root / "docs" if (root / "docs").is_dir() else root
     temas_path = docs / "temas.json"
     temas: dict[str, str] = json.loads(temas_path.read_text(encoding="utf-8")) if temas_path.exists() else {}
     titles = read_titles(docs / "DOCUMENTOS.md")
     report: dict = {"ingestados": [], "sin_cambios": [], "sin_texto": [], "fragmentos": 0}
+    cache_path = root / "imagenes_descripciones.json"
+    cache: dict = {}
+    if images:
+        from .images import load_cache
+        cache = load_cache(cache_path)
+        report["figuras"] = 0
 
     with db.tx() as conn:
         known = {r["filename"]: r["sha256"] for r in db.rows(conn, "SELECT filename, sha256 FROM rag_document")}
@@ -175,16 +194,24 @@ def ingest_dir(root: str | Path, force: bool = False) -> dict:
             report["sin_cambios"].append(pdf.name)
             continue
         chunks, pages = pdf_chunks(pdf)
+        title = titles.get(pdf.name, pdf.stem.replace("_", " "))
+        nfig = 0
+        if images:
+            from .images import figure_texts, save_cache
+            figs = figure_texts(pdf, title, cache)
+            save_cache(cache_path, cache)                 # después de cada PDF: si algo falla, no se pierde lo pagado
+            nfig = len(figs)
+            chunks = merge_figures(chunks, figs, title)
+            report["figuras"] += nfig
         if not chunks:
             report["sin_texto"].append(pdf.name)
             log.warning("%s: sin texto extraíble (¿falta OCR?)", pdf.name)
             continue
         tema = temas.get(pdf.name)
         with db.tx() as conn:
-            n = _store(conn, pdf.name, titles.get(pdf.name, pdf.stem.replace("_", " ")), "pdf", tema, pages, sha,
-                       [(tema, c) for c in chunks])
-        log.info("%s: %d páginas, %d fragmentos", pdf.name, pages, n)
-        report["ingestados"].append({"archivo": pdf.name, "paginas": pages, "fragmentos": n})
+            n = _store(conn, pdf.name, title, "pdf", tema, pages, sha, [(tema, c) for c in chunks])
+        log.info("%s: %d páginas, %d fragmentos (%d figuras)", pdf.name, pages, n, nfig)
+        report["ingestados"].append({"archivo": pdf.name, "paginas": pages, "fragmentos": n, "figuras": nfig})
         report["fragmentos"] += n
 
     faq = next((p for p in (root / "preguntas_frecuentes.csv", docs / "preguntas_frecuentes.csv") if p.exists()), None)

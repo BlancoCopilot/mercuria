@@ -36,3 +36,13 @@ Las dos capas están en WGS84, las mismas coordenadas del GPS. Más detalles en 
 
 - `rios_menores/`: red de ríos de Bolivia, 22 289 tramos (shapefile).
 - `concesiones_mineras/areas_mineras_bolivia_raisg.geojson`: 7 979 áreas mineras con su titular (`cia`). Fuente: RAISG, con datos de SERGETECMIN 2013. El catastro actual de la AJAM no es público.
+
+## Figuras de los PDFs (26/11/2026)
+
+Los gráficos, tablas en imagen y mapas de los PDFs también se pueden vectorizar:
+
+```bash
+docker compose exec api rastrohg rag-ingest /data/raw/rag --imagenes --force
+```
+
+Un modelo de visión de OpenAI describe cada figura útil (con sus cifras) y esa descripción entra al chatbot como un fragmento de su página. Se saltan los logos, los íconos y las páginas escaneadas que ya tienen OCR. Las descripciones quedan en `imagenes_descripciones.json`: revísenlas (se pueden corregir a mano) y la próxima ingesta las reutiliza sin volver a pagar. Tope: 40 figuras por PDF (`RAG_IMAGES_MAX_PER_DOC`); modelo: `RAG_VISION_MODEL` (vacío = el mismo del chat).

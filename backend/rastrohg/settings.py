@@ -35,6 +35,8 @@ class Settings(BaseSettings):
     rag_reasoning_effort: str = "low"             # minimal | low | medium | high; "" si el modelo no razona (gpt-4.1...)
     rag_top_k: int = 6
     rag_embed_model: str = "text-embedding-3-small"   # 1536 dim (ver db/init/02_rag.sql)
+    rag_vision_model: str = ""                    # describe las figuras de los PDFs; "" = rag_model
+    rag_images_max_per_doc: int = 40              # tope de figuras por PDF (costo)
     research_model: str = ""                      # extracción de PDFs de investigación; "" = rag_model
     research_max_pdf_mb: int = 40
     research_reasoning_effort: str = "low"        # "medium" tardó 4 min y devolvió JSON duplicado en pruebas

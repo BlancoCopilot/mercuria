@@ -158,7 +158,7 @@ class DetectionsIn(BaseModel):
 
 
 # --- Chatbot RAG -------------------------------------------------------------
-Tema = Literal["peces", "salud", "mineria", "agua"]
+Tema = Literal["peces", "salud", "mineria", "agua", "normas", "historia", "relaves", "retorta"]
 
 
 class ChatTurn(BaseModel):
