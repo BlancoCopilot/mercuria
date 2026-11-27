@@ -48,6 +48,12 @@ El OCR tiene errores menores (por ejemplo "10" en vez de "lo", "denames" en vez 
 - `mapas/`: capa de ríos (22 289 tramos) y de áreas mineras de Bolivia (7 979, con su titular). Ver `mapas/LEEME.md`.
 - `preguntas_frecuentes.csv` y `preguntas_prueba.csv`: en la carpeta principal.
 
+## Infografías de la OPS (agregado 26/11/2026)
+
+| Archivo | Documento | Tema | Páginas |
+|---|---|---|---|
+| ops_infografias_mercurio.pdf | OPS/OMS: 4 infografías sobre el mercurio (metilmercurio y pescado, prevención en la minería, fuentes de exposición, mercurio metálico en la MAPE). Imagen con su texto transcrito como capa invisible | salud / mineria | 4 |
+
 ## Por descargar (agregado 26/11/2026)
 
 Las preguntas frecuentes nuevas (19, de la 32 a la 50) ya citan estos archivos con el nombre de la primera columna. Descarguen cada uno, guárdenlo en `docs/` con ese nombre, agréguenlo a `temas.json` y vuelvan a correr `ingestar.py`. Si una página web no es un PDF, usen "Imprimir > Guardar como PDF" en el navegador.

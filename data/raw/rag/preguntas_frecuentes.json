@@ -49,8 +49,8 @@
  {
   "id": 4,
   "pregunta": "¿Cuántas veces por semana puedo comer pescado?",
-  "respuesta": "Nuestros documentos no dan un número exacto de veces. El pacú, el tambaquí y el paiche se pueden comer seguido. El surubí y la corvina, con menos frecuencia, y el blanquillo mejor no comerlo. El límite de la OMS (0,5 mg de mercurio por kilo de pescado) está pensado para unos 200 gramos de pescado por semana.",
-  "fuente": "umsa_boletin_peces_beni.pdf p. 3 + cincia_mercurio_loreto_peces.pdf p. 4",
+  "respuesta": "Nuestros documentos no dan un número exacto de veces. El pacú, el tambaquí y el paiche se pueden comer seguido. El surubí y la corvina, con menos frecuencia, y el blanquillo mejor no comerlo. El límite de la OMS (0,5 mg de mercurio por kilo de pescado) está pensado para unos 200 gramos de pescado por semana. Para embarazadas, la OPS/OMS recomienda hasta 7 porciones de 100 gramos por semana de pescado no carnívoro.",
+  "fuente": "umsa_boletin_peces_beni.pdf p. 3 + cincia_mercurio_loreto_peces.pdf p. 4 + ops_infografias_mercurio.pdf p. 1",
   "tema": "peces",
   "palabras_clave": [
    "semana",
@@ -769,6 +769,59 @@
    "cooperativas",
    "estadística",
    "toneladas"
+  ],
+  "verificado": "sí"
+ },
+ {
+  "id": 51,
+  "pregunta": "¿Cuánto pescado puede comer una mujer embarazada?",
+  "respuesta": "La OPS/OMS recomienda que una mujer embarazada coma hasta 7 porciones de 100 gramos por semana de pescado no carnívoro, es decir, de peces que comen frutas, semillas o barro, como el pacú, el tambaquí o la yatorana. Que evite los peces grandes que comen otros peces, como el blanquillo, porque el mercurio pasa por la placenta y por la leche materna y puede afectar el aprendizaje, la memoria y el lenguaje del bebé.",
+  "fuente": "ops_infografias_mercurio.pdf p. 1 + umsa_boletin_peces_beni.pdf",
+  "tema": "salud",
+  "palabras_clave": [
+   "embarazada",
+   "embarazo",
+   "porciones",
+   "semana",
+   "cuánto pescado",
+   "lactancia",
+   "leche materna"
+  ],
+  "verificado": "sí"
+ },
+ {
+  "id": 52,
+  "pregunta": "¿Qué equipo de protección debe usar un minero que trabaja con mercurio?",
+  "respuesta": "La OPS/OMS recomienda mascarilla respiratoria, gafas protectoras, traje de protección química, guantes de goma de nitrilo y botas de seguridad. Además, hay que dejar de amalgamar el mineral en bruto, nunca quemar la amalgama sin retorta ni dentro de tiendas o casas, y no echar cianuro a material que tiene mercurio. Con la retorta se recupera el mercurio para volver a usarlo.",
+  "fuente": "ops_infografias_mercurio.pdf p. 2",
+  "tema": "mineria",
+  "palabras_clave": [
+   "protección",
+   "equipo",
+   "mascarilla",
+   "guantes",
+   "botas",
+   "gafas",
+   "minero",
+   "seguridad"
+  ],
+  "verificado": "sí"
+ },
+ {
+  "id": 53,
+  "pregunta": "¿Qué le hace el vapor de mercurio al cuerpo de un minero?",
+  "respuesta": "El vapor de mercurio se respira al quemar la amalgama. Según la OPS/OMS, puede causar temblores, insomnio, dolor de cabeza, pérdida de memoria, debilidad o espasmos en los músculos, y cambios de humor, irritación o nerviosismo. También daña los pulmones (tos, dificultad para respirar), el estómago (vómitos, dolor) y los riñones. En una embarazada, afecta el desarrollo del bebé.",
+  "fuente": "ops_infografias_mercurio.pdf p. 4",
+  "tema": "salud",
+  "palabras_clave": [
+   "vapor",
+   "minero",
+   "efectos",
+   "síntomas",
+   "pulmones",
+   "riñones",
+   "temblores",
+   "amalgama"
   ],
   "verificado": "sí"
  }
