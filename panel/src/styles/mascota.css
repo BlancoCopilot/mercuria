@@ -2,19 +2,19 @@
    Va sobre .fab sin tocar sus reglas: el botón deja de ser un círculo y Gota queda de pie.
    Si la arrastras, su posición se guarda en el navegador (estilo en línea right/bottom). */
 .fab.fab-pet.fab-pet {
-  width: 150px; height: 168px; border: 0; border-radius: 0; background: transparent;
+  width: 184px; height: 204px; border: 0; border-radius: 0; background: transparent;
   padding: 0; place-items: end center; overflow: visible;
 }
 .fab.fab-pet.fab-pet:hover { background: transparent; transform: none; }
 .fab.fab-pet.fab-pet[data-open="true"] { background: transparent; }
 .fab.fab-pet.fab-pet[data-open="true"]::after {
-  content: ""; position: absolute; left: 40px; right: 40px; bottom: -2px; height: 4px;
+  content: ""; position: absolute; left: 52px; right: 52px; bottom: -2px; height: 4px;
   border-radius: 4px; background: var(--marigold);
 }
 .fab.fab-pet:focus-visible { outline: 2px solid var(--charcoal); outline-offset: 4px; border-radius: 16px; }
 
 .gota-anim {
-  width: 150px; height: 165px; object-fit: contain; display: block;
+  width: 184px; height: 202px; object-fit: contain; display: block;
   cursor: grab; touch-action: none; user-select: none; -webkit-user-drag: none;
   filter: drop-shadow(0 5px 4px rgba(35, 33, 44, 0.18));
   animation: gota-flota 3.2s ease-in-out infinite;
@@ -41,17 +41,17 @@
 
 /* El chat abierto y la invitación se acomodan al nuevo tamaño de Gota */
 @media (min-width: 721px) {
-  body:has(.fab-pet) .chat-panel { bottom: 198px; height: min(620px, calc(100dvh - 228px)); }
+  body:has(.fab-pet) .chat-panel { bottom: 232px; height: min(620px, calc(100dvh - 262px)); }
 }
-body:has(.fab-pet) .fab-hint { right: calc(var(--gota-r, 20px) + 154px); bottom: calc(var(--gota-b, 20px) + 84px); }
+body:has(.fab-pet) .fab-hint { right: calc(var(--gota-r, 20px) + 186px); bottom: calc(var(--gota-b, 20px) + 104px); }
 
 @media (max-width: 720px) {
-  .fab.fab-pet.fab-pet { width: 118px; height: 132px; right: 10px; bottom: 10px; }
-  .gota-anim { width: 118px; height: 130px; }
+  .fab.fab-pet.fab-pet { width: 136px; height: 152px; right: 10px; bottom: 10px; }
+  .gota-anim { width: 136px; height: 150px; }
   .gota-globo { max-width: 180px; }
-  body:has(.fab-pet) .fab-hint { right: calc(var(--gota-r, 10px) + 120px); bottom: calc(var(--gota-b, 10px) + 62px); }
+  body:has(.fab-pet) .fab-hint { right: calc(var(--gota-r, 10px) + 138px); bottom: calc(var(--gota-b, 10px) + 74px); }
   body:has(.map-page) .fab.fab-pet.fab-pet { bottom: 140px; }
-  body:has(.map-page):has(.fab-pet) .fab-hint { bottom: calc(var(--gota-b, 140px) + 62px); }
+  body:has(.map-page):has(.fab-pet) .fab-hint { bottom: calc(var(--gota-b, 140px) + 74px); }
 }
 
 @media (prefers-reduced-motion: reduce) {

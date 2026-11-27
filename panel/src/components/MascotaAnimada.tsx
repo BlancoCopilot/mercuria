@@ -224,7 +224,7 @@ export function MascotaAnimada({ chatAbierto, mood, err, ocultarGlobo }: { chatA
   return (
     <>
       {verGlobo && <span className="gota-globo" data-lado={lado} role="status" aria-live="polite">{globo}</span>}
-      <img ref={img} className="gota-anim" data-reaccion={r} data-arrastrando={arrastrando || undefined} src={src} alt="" width={150} height={165}
+      <img ref={img} className="gota-anim" data-reaccion={r} data-arrastrando={arrastrando || undefined} src={src} alt="" width={184} height={202}
         draggable={false} onPointerDown={alPresionar} onDoubleClick={alDobleClic} title="Arrástrame a donde quieras · doble clic para volver" />
     </>
   );
