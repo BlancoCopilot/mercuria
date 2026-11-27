@@ -3,6 +3,7 @@
 .env.*
 !.env.example
 *.pem
+*.dump
 *service-account*.json
 
 # Dependencias y compilados
@@ -13,6 +14,8 @@ __pycache__/
 panel/node_modules/
 panel/dist/
 .DS_Store
+MercurIA.apk
+scripts/vps.local
 
 # Datos crudos: grandes o de terceros (se descargan con los comandos de DATOS.md)
 data/raw/*

@@ -223,6 +223,9 @@
   body:has(.map-page) .fab { bottom: 146px; width: 64px; height: 64px; right: 14px; }
   body:has(.map-page) .fab-hint { bottom: 156px; right: 88px; }
   body:has(.map-page .sheet[data-open="true"]) .fab { opacity: 0; pointer-events: none; }
+  /* con el chat abierto, la Gota flotante (subida para no tapar el mapa) caería encima de la barra
+     de abajo del panel y taparía "Terminar"; el panel ya tiene su ✕ para cerrar */
+  body:has(.map-page) .fab[data-open="true"] { display: none; }
 }
 
 @media (max-width: 720px) {
@@ -298,3 +301,89 @@
 .rec-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px 16px; }
 .rec-fields label { display: grid; gap: 4px; }
 .publish-bar { position: sticky; bottom: 12px; margin-top: 32px; background: var(--marigold); border-radius: var(--r-card); padding: 16px 20px; display: flex; gap: 16px; align-items: center; justify-content: space-between; flex-wrap: wrap; z-index: var(--z-sheet); }
+
+/* ── Voz en tiempo real: botón Llamar y pantalla de llamada ── */
+.voz-mic span { margin-left: 6px; }
+.ask-row .voz-mic { background: transparent; color: var(--charcoal); border: 1px solid var(--charcoal); }
+.marigold-bar .voz-mic { align-self: center; margin-left: var(--s-12); }
+.msg-voz { display: inline-flex; vertical-align: -3px; margin-right: 6px; opacity: 0.7; }
+.msg-voz svg { width: 14px; height: 14px; }
+.tag-web { display: inline-flex; align-items: center; gap: 5px; color: inherit; text-decoration: none; }
+.tag-web:hover { background: var(--sky); }
+@media (max-width: 720px) { .marigold-bar .voz-mic { margin: 0; width: 100%; } }
+
+.call-backdrop {
+  position: fixed; inset: 0; z-index: calc(var(--z-toast) + 1);
+  background: rgb(35 33 44 / 0.5); display: grid; place-items: center; padding: 16px;
+  animation: call-fade 200ms var(--ease-out);
+}
+@keyframes call-fade { from { opacity: 0; } }
+.call {
+  width: min(400px, 100%); max-height: calc(100dvh - 32px); overflow: auto;
+  background: var(--paper); border-radius: var(--r-card);
+  display: grid; grid-template-rows: auto 1fr auto auto; gap: 20px; padding: 20px 24px 28px;
+  animation: call-in 280ms var(--ease-out);
+}
+@keyframes call-in { from { opacity: 0; transform: translateY(16px) scale(0.97); } }
+.call-top { display: flex; justify-content: space-between; align-items: center; font-size: var(--text-body-sm); }
+.call-kicker { display: inline-flex; gap: 6px; align-items: center; color: var(--charcoal-70); }
+.call-timer { font-size: var(--text-body); font-variant-numeric: tabular-nums; letter-spacing: 0.02em; }
+.call-center { display: grid; justify-items: center; text-align: center; gap: 6px; padding-top: 12px; }
+.call-name { font-size: var(--text-h); font-weight: 300; margin: 14px 0 0; letter-spacing: -0.01em; }
+.call-status { margin: 0; min-height: 1.5em; color: var(--charcoal-70); font-size: var(--text-body); }
+.call-status-error { color: var(--ember-ink); max-width: 30ch; }
+.call-warn { margin: 0; font-size: var(--text-caption); color: var(--ember-ink); }
+
+/* Gota y los anillos: laten con la voz de Gota (caléndula) o con la tuya (cielo); al llamar, pulso lento */
+.call-avatar { position: relative; display: grid; place-items: center; width: 236px; height: 236px; }
+.call-avatar .mascot { position: relative; z-index: 1; }
+.call-ring {
+  position: absolute; inset: 18px; border-radius: 50%; background: var(--paper-2);
+  transition: transform 240ms var(--ease-out), background 240ms var(--ease-out);
+}
+.call-ring-2 { inset: 0; background: transparent; border: 2px solid transparent; }
+.call-avatar[data-who="gota"] .call-ring { background: var(--marigold); transform: scale(1.04); }
+.call-avatar[data-who="gota"] .call-ring-2 { border-color: var(--marigold); animation: call-pulse 900ms var(--ease-out) infinite; }
+.call-avatar[data-who="persona"] .call-ring { background: var(--sky); }
+.call-avatar[data-who="persona"] .call-ring-2 { border-color: var(--sky); animation: call-pulse 900ms var(--ease-out) infinite; }
+.call-avatar[data-llamando="true"] .call-ring-2 { border-color: var(--charcoal-20); animation: call-pulse 1600ms var(--ease-out) infinite; }
+@keyframes call-pulse { from { transform: scale(0.86); opacity: 1; } to { transform: scale(1.12); opacity: 0; } }
+
+/* alto fijo (4 líneas) y anclado abajo: muestra lo último sin que la tarjeta salte al crecer el texto */
+.call-sub {
+  background: var(--paper-2); border-radius: var(--r-chip); padding: 12px 14px; height: 108px; overflow: hidden;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  font-size: var(--text-body-sm); line-height: 1.45; text-wrap: pretty;
+}
+.call-sub-who { display: block; font-size: var(--text-caption); font-weight: 500; color: var(--charcoal-70); margin-bottom: 2px; }
+
+.call-actions { display: flex; justify-content: center; gap: 48px; }
+.call-btn { display: grid; justify-items: center; gap: 8px; background: none; border: 0; padding: 0; cursor: pointer; color: var(--charcoal); font: inherit; }
+.call-btn:disabled { cursor: default; opacity: 0.5; }
+.call-btn-circle {
+  width: 68px; height: 68px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--paper-3); color: var(--charcoal);
+  transition: transform var(--dur) var(--ease-out), background var(--dur) var(--ease-out);
+}
+.call-btn:not(:disabled):hover .call-btn-circle { transform: scale(1.05); }
+.call-btn:not(:disabled):active .call-btn-circle { transform: scale(0.95); }
+.call-btn[aria-pressed="true"] .call-btn-circle { background: var(--charcoal); color: var(--snow); }
+.call-btn-end .call-btn-circle { width: 76px; height: 76px; background: var(--ember); color: var(--snow); }
+.call-btn-end:not(:disabled):hover .call-btn-circle { background: var(--ember-ink); }
+.call-btn-go .call-btn-circle { width: 76px; height: 76px; background: var(--pine); color: var(--snow); }
+.call-btn-label { font-size: var(--text-body-sm); }
+.call-btn:focus-visible { outline: none; }
+.call-btn:focus-visible .call-btn-circle { outline: 2px solid var(--charcoal); outline-offset: 3px; }
+
+@media (max-width: 720px) {
+  .call-backdrop { padding: 0; }
+  .call {
+    width: 100%; height: 100dvh; max-height: none; border-radius: 0;
+    padding: calc(16px + env(safe-area-inset-top)) 20px calc(28px + env(safe-area-inset-bottom));
+  }
+  .call-center { align-content: center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .call, .call-backdrop { animation: none; }
+  .call-ring-2 { animation: none !important; }
+}

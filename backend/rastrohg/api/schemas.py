@@ -177,13 +177,27 @@ class ChatIn(BaseModel):
 
 class ChatSource(BaseModel):
     n: int
-    tipo: Literal["pdf", "faq", "mapa"]
+    tipo: Literal["pdf", "faq", "mapa", "web"]
     archivo: str
     titulo: str
     pagina: int | None
     tema: str | None
     fragmento: str
     score: float
+    url: str | None = None
+
+
+class VozIn(BaseModel):
+    sdp: str = Field(min_length=20, max_length=20000, description="oferta SDP del navegador")
+    historial: list[ChatTurn] = Field(default=[], max_length=12, description="chat de texto previo (opcional)")
+    lat: float | None = Field(default=None, ge=-90, le=90)
+    lon: float | None = Field(default=None, ge=-180, le=180)
+    comunidad_id: int | None = None
+
+
+class VozBuscarIn(BaseModel):
+    pregunta: str = Field(min_length=2, max_length=1000)
+    tema: Tema | None = None
 
 
 class ChatOut(BaseModel):

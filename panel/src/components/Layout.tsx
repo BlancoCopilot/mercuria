@@ -5,6 +5,7 @@ import { useApi } from "../lib/hooks";
 import type { MapVersion } from "../lib/api";
 import { hace } from "../lib/format";
 import { Drop } from "./Mascot";
+import { CallScreen } from "./CallScreen";
 import { ChatWidget } from "./ChatWidget";
 import { LocationAlert } from "./LocationAlert";
 
@@ -121,6 +122,7 @@ export function Layout({ full }: { full?: boolean }) {
       </main>
       {!full && <Footer />}
       <ChatWidget />
+      <CallScreen />
     </div>
   );
 }

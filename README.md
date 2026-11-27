@@ -45,6 +45,12 @@ uv run pytest tests/test_engine.py                       # motor, sin base de da
 RASTROHG_TEST_PG=postgresql://rastrohg:<pass>@localhost:5433 uv run pytest   # + integración en una base aislada (rastrohg_test)
 ```
 
+## Chat con Gota: texto, voz e internet
+
+- **Texto** (`POST /v1/chat`): búsqueda híbrida en los documentos (pgvector + texto) y respuesta con citas. Si los documentos no responden, el modelo usa `web_search` de OpenAI, prefiere fuentes oficiales y lo dice ("Según lo que encontré en internet…"); las fuentes web se muestran como enlaces. Se apaga con `CHAT_WEB_SEARCH=false`.
+- **Voz en tiempo real** (botón *Hablar*): GPT-Live (`gpt-live-1.1`) por WebRTC. El servidor crea la sesión con la oferta SDP del navegador (`POST /v1/chat/voz`), así la clave nunca llega al navegador. GPT-Live conversa y delega cada pregunta a un modelo de texto que llama a `buscar_documentos` (lo atiende el navegador con `POST /v1/chat/voz/buscar`) y, si hace falta, a `web_search`. Lo hablado queda transcrito en el mismo chat. Necesita HTTPS (o `localhost`) para el micrófono.
+- Costo de la voz: USD 0,05 por minuto activo (0,02 en espera) más los tokens del modelo de texto. Límites: `LIVE_MAX_MINUTES` por llamada, `LIVE_PER_IP_HOUR` y `LIVE_GLOBAL_PER_HOUR`.
+
 ## Aportes de investigación y datos abiertos
 
 - `/aportar`: universidades e investigadores solicitan cuenta (un admin la activa en `/admin`), suben un PDF o CSV y la IA (`backend/rastrohg/research/`) propone cada medición con su página, cita textual y confianza. El autor revisa, ubica los sitios sin coordenadas y publica con licencia CC BY 4.0, CC0 o CC BY-SA 4.0, con embargo opcional de hasta 12 meses.

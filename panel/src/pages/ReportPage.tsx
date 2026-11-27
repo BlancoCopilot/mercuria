@@ -1,18 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
-import { ensureDevice, post, uuid } from "../lib/api";
+import { uuid } from "../lib/api";
+import { enviarCola, readQueue, writeQueue, type Pendiente } from "../lib/cola";
 import { PageHead } from "../components/Layout";
 import { PointPicker } from "../components/PointPicker";
 import { Toast } from "../components/ui";
 import { useToast } from "../lib/hooks";
 import { fecha } from "../lib/format";
-
-// Las denuncias se guardan primero en este navegador. Si no hay señal, quedan en cola y se
-// envían solas cuando vuelve la conexión. El servidor ignora duplicados (client_uuid).
-const QUEUE_KEY = "rastrohg.cola_denuncias";
-interface Pendiente { client_uuid: string; kind: string; description: string | null; lat: number; lon: number; area_ha: number | null; created_client_at: string }
-
-function readQueue(): Pendiente[] { try { return JSON.parse(localStorage.getItem(QUEUE_KEY) || "[]"); } catch { return []; } }
-function writeQueue(q: Pendiente[]) { try { localStorage.setItem(QUEUE_KEY, JSON.stringify(q)); } catch { /* */ } }
 
 const TIPOS = [
   { id: "mineria", label: "Minería nueva", help: "Dragas, balsas, desmonte o maquinaria" },
@@ -34,17 +27,12 @@ export default function ReportPage() {
   const { toast, show } = useToast();
 
   const flush = useCallback(async () => {
-    const q = readQueue();
-    if (!q.length || !navigator.onLine) return;
+    if (!readQueue().length || !navigator.onLine) return;
     setSending(true);
     try {
-      await ensureDevice();
-      const r = await post<{ reports: { aceptadas: string[]; duplicadas: string[] } }>("/v1/sync", { since_version: 0, reports: q }, { device: true });
-      const done = new Set([...r.reports.aceptadas, ...r.reports.duplicadas]);
-      const rest = readQueue().filter((x) => !done.has(x.client_uuid));
-      writeQueue(rest);
-      setQueue(rest);
-      show(done.size === 1 ? "Denuncia enviada. Gracias." : `${done.size} denuncias enviadas. Gracias.`);
+      const n = await enviarCola();
+      setQueue(readQueue());
+      show(n === 1 ? "Denuncia enviada. Gracias." : `${n} denuncias enviadas. Gracias.`);
     } catch (e) {
       setErr((e as Error).message);
     } finally {

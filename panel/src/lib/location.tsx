@@ -22,6 +22,22 @@ export interface Zona {
 /** Posición exacta: solo vive en este navegador (para dibujar "estás aquí"); nunca se envía. */
 export interface Posicion { lat: number; lon: number; precision: number }
 
+/** De dónde sale la posición. En la web, el navegador; la app de celular pone el GPS nativo (Capacitor). */
+export type FuenteUbicacion = () => Promise<Posicion>;
+export class UbicacionDenegada extends Error {}
+
+let fuente: FuenteUbicacion = () => new Promise((ok, ko) => {
+  if (!("geolocation" in navigator)) { ko(new Error("sin geolocalización")); return; }
+  navigator.geolocation.getCurrentPosition(
+    (p) => ok({ lat: p.coords.latitude, lon: p.coords.longitude, precision: p.coords.accuracy }),
+    (err) => ko(err.code === err.PERMISSION_DENIED ? new UbicacionDenegada(err.message) : new Error(err.message)),
+    { enableHighAccuracy: false, timeout: 15000, maximumAge: 10 * 60 * 1000 },
+  );
+});
+
+export function usarFuenteUbicacion(f: FuenteUbicacion) { fuente = f; }
+export const posicionActual = () => fuente();
+
 interface LocCtx { estado: Estado; zona: Zona | null; pos: Posicion | null; ubicar: () => void; descartar: () => void; cerrarAviso: () => void; avisoCerrado: boolean }
 const Ctx = createContext<LocCtx | null>(null);
 
@@ -66,22 +82,18 @@ export function LocationProvider({ children }: { children: ReactNode }) {
   const [pos, setPos] = useState<Posicion | null>(null);
   const [avisoCerrado, setAvisoCerrado] = useState(false);
 
-  const ubicar = useCallback(() => {
-    if (!("geolocation" in navigator)) { setEstado("sin_senal"); return; }
+  const ubicar = useCallback(async () => {
     setEstado("ubicando");
-    navigator.geolocation.getCurrentPosition(
-      async (p) => {
-        setPos({ lat: p.coords.latitude, lon: p.coords.longitude, precision: p.coords.accuracy });
-        try {
-          const z = await zonaDe(p.coords.latitude, p.coords.longitude);
-          setZona(z);
-          setAvisoCerrado(ses(SES_CERRADO) === `${z.h3}:${z.nivel}`);
-          setEstado("listo");
-        } catch { setEstado("sin_senal"); }
-      },
-      (err) => setEstado(err.code === err.PERMISSION_DENIED ? "denegado" : "sin_senal"),
-      { enableHighAccuracy: false, timeout: 15000, maximumAge: 10 * 60 * 1000 },
-    );
+    let p: Posicion;
+    try { p = await fuente(); }
+    catch (e) { setEstado(e instanceof UbicacionDenegada ? "denegado" : "sin_senal"); return; }
+    setPos(p);
+    try {
+      const z = await zonaDe(p.lat, p.lon);
+      setZona(z);
+      setAvisoCerrado(ses(SES_CERRADO) === `${z.h3}:${z.nivel}`);
+      setEstado("listo");
+    } catch { setEstado("sin_senal"); }
   }, []);
 
   // Al entrar: si ya hay permiso, ubica directo; si no, muestra nuestra explicación antes del permiso del navegador.
