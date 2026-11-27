@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useChat } from "../lib/chat";
 import { estadoVoz } from "./ChatThread";
-import { Mascot } from "./Mascot";
+import { GotaImg } from "./GotaImg";
 
 // Llamada con Gota: pantalla de llamada (tarjeta centrada en computadora, pantalla completa en celular).
 // Gota grande mueve la boca con su voz real; anillos que laten cuando alguien habla; cronómetro;
@@ -89,7 +89,7 @@ export function CallScreen() {
           <div className="call-avatar" data-who={quien} data-llamando={llamando}>
             <span className="call-ring" aria-hidden="true" />
             <span className="call-ring call-ring-2" aria-hidden="true" />
-            <Mascot mood={mood} size={176} label="Gota" />
+            <GotaImg mood={mood} size={190} llamada label="Gota" />
           </div>
           <h2 className="call-name">Gota</h2>
           <p className={fallo ? "call-status call-status-error" : "call-status"} aria-live="polite">{estado}</p>

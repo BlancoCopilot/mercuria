@@ -27,6 +27,8 @@ def main(argv: list[str] | None = None) -> None:
 
     o = sub.add_parser("load-osm")
     o.add_argument("--file", help="JSON de Overpass ya descargado (si no, consulta Overpass)")
+    so = sub.add_parser("load-salud", help="solo centros de salud de OSM (no recalcula el riesgo)")
+    so.add_argument("--file", help="JSON de Overpass ya descargado (si no, consulta Overpass)")
 
     for name in ("load-census", "load-concessions", "load-protected", "load-measurements"):
         sub.add_parser(name).add_argument("path")
@@ -81,6 +83,13 @@ def main(argv: list[str] | None = None) -> None:
         _print(load_hydrorivers(a.path, a.outlet, a.min_upland))
         with db.tx() as c:
             _print(build_cells(c))
+    elif a.cmd == "load-salud":
+        from .ingest import osm
+        payload = None
+        if a.file:
+            with open(a.file, encoding="utf-8") as fh:
+                payload = json.load(fh)
+        _print(osm.ingest_salud(payload))
     elif a.cmd == "load-osm":
         from .ingest import osm
         if a.file:

@@ -105,7 +105,7 @@ export default function ReportPage() {
           <p className="caption muted">Cada denuncia pesa poco en el mapa (0,2 frente a 1 de un dato de laboratorio) hasta que un líder la valide o el satélite la confirme.</p>
         </form>
 
-        <div className="stack">
+        <div className="stack report-lugar">
           <div className="spread">
             <span className="label">Lugar {pt && <span className="muted num" style={{ textTransform: "none", letterSpacing: 0 }}>· {pt.lat.toFixed(4)}, {pt.lon.toFixed(4)}</span>}</span>
             <button className="btn btn-pill" type="button" onClick={ubicar}>Usar mi ubicación</button>

@@ -55,3 +55,6 @@ export function hace(s: string | null | undefined): string {
   if (h < 24) return `hace ${h} h`;
   return `hace ${Math.round(h / 24)} días`;
 }
+
+/** Enlace para pedir indicaciones de cómo llegar (solo se envía el destino). */
+export const comoLlegar = (lat: number, lon: number) => `https://www.google.com/maps/dir/?api=1&destination=${lat.toFixed(5)},${lon.toFixed(5)}`;

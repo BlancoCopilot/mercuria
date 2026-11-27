@@ -4,9 +4,9 @@ import * as maplibregl from "maplibre-gl";
 import type { MapGeoJSONFeature } from "maplibre-gl";
 import { cellToLatLng } from "h3-js";
 import { api, type Celda, type CeldaDetalle, type Comunidad, type SitioProps } from "../lib/api";
-import { cellsToGeoJSON, centroid, createMap, loadBaseStyle, REFERENCIA, RISK_COLOR } from "../lib/map";
+import { addIconosSalud, cellsToGeoJSON, centroid, createMap, loadBaseStyle, REFERENCIA, RISK_COLOR, type SaludProps } from "../lib/map";
 import { useMedia } from "../lib/hooks";
-import { confianzaTexto, fecha, int, LEGAL_TEXTO, MATRIZ, num, pct, rango } from "../lib/format";
+import { comoLlegar, confianzaTexto, fecha, int, LEGAL_TEXTO, MATRIZ, num, pct, rango } from "../lib/format";
 import { CommunitySearch } from "../components/CommunitySearch";
 import { ErrorNote, RiskChip, Skeleton, SyntheticTag } from "../components/ui";
 import { useUbicacion, type Posicion, type Zona } from "../lib/location";
@@ -16,6 +16,7 @@ type Seleccion =
   | { tipo: "celda"; h3: string }
   | { tipo: "sitio"; props: SitioProps }
   | { tipo: "yo" }
+  | { tipo: "salud"; props: SaludProps; lat: number; lon: number }
   | { tipo: "tramo"; props: { hyriv_id: number; p05: number; p50: number; p95: number; n_cercanos: number; presion_kg: number }; matriz: string }
   | null;
 
@@ -26,17 +27,32 @@ const CAPAS: { id: Capa; label: string }[] = [
   { id: "sedimento", label: "Mercurio en sedimento" },
 ];
 
-export default function MapPage() {
+type Hoja = "baja" | "media" | "alta";
+const NIVELES_HOJA: Hoja[] = ["baja", "media", "alta"];
+
+/** `app`: versión de la app de celular: menús desplegables arriba y hoja inferior de 3 alturas, para ver el mapa. */
+export default function MapPage({ app = false }: { app?: boolean } = {}) {
   const el = useRef<HTMLDivElement>(null);
   const map = useRef<maplibregl.Map | null>(null);
   const [ready, setReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [capa, setCapa] = useState<Capa>("riesgo");
   const [sitios, setSitios] = useState(true);
+  const [salud, setSalud] = useState(true);
+  const saludRef = useRef<Centro[]>([]);
   const [sel, setSel] = useState<Seleccion>(null);
   const [comunidad, setComunidad] = useState<Comunidad | null>(null);
   const [stats, setStats] = useState<{ alto: number; medio: number; palidas: number; sitios: number; enAp: number } | null>(null);
-  const [sheetOpen, setSheetOpen] = useState(false);
+  // Hoja inferior: en la web, abierta o cerrada; en la app, baja (una línea), media (40 %) o alta.
+  const [hoja, setHoja] = useState<Hoja>("baja");
+  const sheetOpen = hoja !== "baja";
+  const setSheetOpen = useCallback((v: boolean | ((o: boolean) => boolean)) => setHoja((h) => {
+    const abrir = typeof v === "function" ? v(h !== "baja") : v;
+    return abrir ? (h === "baja" ? (app ? "media" : "alta") : h) : "baja";
+  }), [app]);
+  const [menu, setMenu] = useState<null | "buscar" | "capas">(null);
+  const arrastre = useRef<number | null>(null);
+  const moverHoja = (d: 1 | -1) => setHoja((h) => NIVELES_HOJA[Math.max(0, Math.min(2, NIVELES_HOJA.indexOf(h) + d))]);
   const mobile = useMedia("(max-width: 900px)");
   const riversLoaded = useRef(new Set<string>());
   const nav = useNavigate();
@@ -58,9 +74,12 @@ export default function MapPage() {
       map.current = m;
       m.on("load", async () => {
         try {
-          const [cells, sites] = await Promise.all([
+          const [cells, sites, centros] = await Promise.all([
             api<{ celdas: Celda[] }>("/v1/map/cells?since=0", { auth: false }),
             api<GeoJSON.FeatureCollection>("/v1/map/sites", { auth: false }),
+            // si falla, el mapa sigue sin la capa de salud
+            api<GeoJSON.FeatureCollection<GeoJSON.Point, SaludProps>>("/v1/map/salud", { auth: false })
+              .catch(() => ({ type: "FeatureCollection", features: [] }) as GeoJSON.FeatureCollection<GeoJSON.Point, SaludProps>),
           ]);
           if (cancelled) return;
           const fc = cellsToGeoJSON(cells.celdas);
@@ -102,6 +121,20 @@ export default function MapPage() {
             },
           });
 
+          // Centros de salud: encima de todo, siempre visibles (aunque se encimen)
+          addIconosSalud(m);
+          m.addSource("salud", { type: "geojson", data: centros });
+          m.addLayer({
+            id: "salud", type: "symbol", source: "salud",
+            layout: {
+              "icon-image": ["case", ["==", ["get", "tipo"], "Hospital"], "salud-h", "salud"],
+              "icon-size": ["interpolate", ["linear"], ["zoom"], 6, 0.75, 9, 0.9, 12, 1.1],
+              "icon-allow-overlap": true, "icon-ignore-placement": true,
+              "symbol-sort-key": ["case", ["==", ["get", "tipo"], "Hospital"], 1, 0],
+            },
+          });
+          saludRef.current = centros.features.map((f) => ({ ...f.properties, lon: f.geometry.coordinates[0], lat: f.geometry.coordinates[1] }));
+
           // Encuadre: las zonas con riesgo (o todas), dejando libres la barra y el panel
           const foco = fc.features.filter((f) => f.properties?.clase !== "bajo");
           const b = new maplibregl.LngLatBounds();
@@ -126,18 +159,29 @@ export default function MapPage() {
         }
       });
 
-      const clickable = ["sitios-pt", "sitios-fill", "rios", "celdas-fill"];
+      const clickable = ["salud", "sitios-pt", "sitios-fill", "rios", "celdas-fill"];
+      // los centros de salud se tocan con margen (íconos chicos, dedos grandes)
+      const tocar = (p: maplibregl.Point) => {
+        const pad = 10;
+        const salud = m.getLayer("salud") && m.getLayoutProperty("salud", "visibility") !== "none"
+          ? m.queryRenderedFeatures([[p.x - pad, p.y - pad], [p.x + pad, p.y + pad]], { layers: ["salud"] }) : [];
+        return salud.length ? salud : m.queryRenderedFeatures(p, { layers: clickable.filter((l) => m.getLayer(l)) });
+      };
       m.on("click", (e) => {
-        const hits = m.queryRenderedFeatures(e.point, { layers: clickable.filter((l) => m.getLayer(l)) });
+        setMenu(null);
+        const hits = tocar(e.point);
         const f: MapGeoJSONFeature | undefined = hits[0];
         if (!f) { setSel(null); return; }
-        if (f.layer.id.startsWith("sitios")) setSel({ tipo: "sitio", props: f.properties as SitioProps });
+        if (f.layer.id === "salud") {
+          const [lon, lat] = (f.geometry as GeoJSON.Point).coordinates;
+          setSel({ tipo: "salud", props: f.properties as SaludProps, lat, lon });
+        } else if (f.layer.id.startsWith("sitios")) setSel({ tipo: "sitio", props: f.properties as SitioProps });
         else if (f.layer.id === "rios") setSel({ tipo: "tramo", props: f.properties as never, matriz: String(m.getLayer("rios")?.metadata ?? "") });
         else setSel({ tipo: "celda", h3: String(f.properties.h3) });
         setSheetOpen(true);
       });
       m.on("mousemove", (e) => {
-        const hits = m.queryRenderedFeatures(e.point, { layers: clickable.filter((l) => m.getLayer(l)) });
+        const hits = tocar(e.point);
         m.getCanvas().style.cursor = hits.length ? "pointer" : "";
       });
     })();
@@ -182,6 +226,12 @@ export default function MapPage() {
     if (!m || !ready) return;
     for (const l of ["sitios-fill", "sitios-line", "sitios-pt"]) m.setLayoutProperty(l, "visibility", sitios ? "visible" : "none");
   }, [sitios, ready]);
+
+  useEffect(() => {
+    const m = map.current;
+    if (!m || !ready || !m.getLayer("salud")) return;
+    m.setLayoutProperty("salud", "visibility", salud ? "visible" : "none");
+  }, [salud, ready]);
 
   useEffect(() => {
     const m = map.current;
@@ -253,8 +303,16 @@ export default function MapPage() {
     setSel({ tipo: "celda", h3: h });
   };
 
+  const irACentro = (c: Centro) => {
+    map.current?.flyTo({ center: [c.lon, c.lat], zoom: Math.max(map.current.getZoom(), 12), duration: 900 });
+    setSalud(true);
+    setSel({ tipo: "salud", props: c, lat: c.lat, lon: c.lon });
+  };
+
   const panel = sel?.tipo === "yo" ? (
-    <YoInfo pos={pos} zona={zona} celdas={cellsRef.current} onClose={() => setSel(null)} onCelda={irACelda} />
+    <YoInfo pos={pos} zona={zona} celdas={cellsRef.current} centros={saludRef.current} onClose={() => setSel(null)} onCelda={irACelda} onCentro={irACentro} />
+  ) : sel?.tipo === "salud" ? (
+    <SaludInfo c={sel.props} lat={sel.lat} lon={sel.lon} pos={pos} onClose={() => setSel(null)} />
   ) : (
     <PanelContent
       sel={sel} capa={capa} stats={stats} ready={ready} error={error}
@@ -263,10 +321,11 @@ export default function MapPage() {
   );
 
   return (
-    <div className="map-page" data-fab-space="true">
-      <div ref={el} className="map-canvas" role="region" aria-label="Mapa de riesgo por mercurio" />
+    <div className="map-page" data-fab-space="true" data-hoja={app ? hoja : undefined}>
+      <div ref={el} className="map-canvas" role="region" aria-label="Mapa de riesgo por mercurio"
+        onPointerDown={app ? () => setMenu(null) : undefined} />
 
-      <form className="marigold-bar map-bar" onSubmit={(e) => { e.preventDefault(); if (comunidad) nav(`/comunidad/${comunidad.id}`); }}>
+      {!app && <form className="marigold-bar map-bar" onSubmit={(e) => { e.preventDefault(); if (comunidad) nav(`/comunidad/${comunidad.id}`); }}>
         <div className="field" style={{ flex: "2 1 0" }}>
           <label className="label">Mi comunidad</label>
           <CommunitySearch onPick={irAComunidad} placeholder={mobile ? "Tu comunidad" : undefined} />
@@ -286,12 +345,91 @@ export default function MapPage() {
                 <span>Sitios</span>
               </label>
             </div>
+            <div className="field" style={{ flex: "0 0 auto" }}>
+              <span className="label">Salud</span>
+              <label className="row" style={{ gap: 8, minHeight: 40, cursor: "pointer" }}>
+                <input type="checkbox" checked={salud} onChange={(e) => setSalud(e.target.checked)} style={{ width: 18, height: 18, accentColor: "#006434" }} />
+                <span>Centros</span>
+              </label>
+            </div>
           </>
         )}
         <button className="btn" type="submit" disabled={!comunidad}>Ver ficha</button>
-      </form>
+      </form>}
 
-      {mobile ? (
+      {app ? (
+        <>
+          <div className="m-mapa-top">
+            <button className="m-mapa-btn" aria-expanded={menu === "buscar"} onClick={() => setMenu((m) => (m === "buscar" ? null : "buscar"))}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6" /><path d="M15.4 15.4l4.6 4.6" /></svg>
+              <span>{comunidad ? comunidad.name : "Buscar comunidad"}</span>
+            </button>
+            <button className="m-mapa-btn" aria-expanded={menu === "capas"} onClick={() => setMenu((m) => (m === "capas" ? null : "capas"))}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinejoin="round" aria-hidden="true"><path d="M12 3.5l8.5 4.5-8.5 4.5L3.5 8z" /><path d="M3.5 12.2l8.5 4.5 8.5-4.5M3.5 16.2l8.5 4.5 8.5-4.5" /></svg>
+              <span>Capas</span>
+            </button>
+          </div>
+          {menu === "buscar" && (
+            <div className="m-mapa-menu" role="dialog" aria-label="Buscar comunidad">
+              <CommunitySearch onPick={(c) => { irAComunidad(c); setMenu(null); }} placeholder="Escribe el nombre de tu comunidad" autoFocus />
+            </div>
+          )}
+          {menu === "capas" && (
+            <div className="m-mapa-menu" role="dialog" aria-label="Capas del mapa">
+              <p className="m-mapa-menu-titulo">Ver en el mapa</p>
+              {CAPAS.map((c) => (
+                <label key={c.id} className="m-opcion">
+                  <input type="radio" name="m-capa" checked={capa === c.id} onChange={() => setCapa(c.id)} />
+                  <span>{c.label}</span>
+                </label>
+              ))}
+              <p className="m-mapa-menu-titulo">Mostrar también</p>
+              <label className="m-opcion"><input type="checkbox" checked={sitios} onChange={(e) => setSitios(e.target.checked)} /><span>Sitios mineros</span></label>
+              <label className="m-opcion"><input type="checkbox" checked={salud} onChange={(e) => setSalud(e.target.checked)} /><span>Centros de salud</span></label>
+              <button className="btn btn-block m-mapa-listo" onClick={() => setMenu(null)}>Listo</button>
+            </div>
+          )}
+          {hoja !== "alta" && (
+            <button className="map-locate-fab" onClick={usarUbicacion} disabled={estado === "ubicando"} aria-label={estado === "ubicando" ? "Ubicando…" : "Ir a mi ubicación"}>
+              <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round">
+                <circle cx="12" cy="12" r="3.2" fill="currentColor" /><circle cx="12" cy="12" r="7.2" /><path d="M12 2.5v2.4M12 19.1v2.4M2.5 12h2.4M19.1 12h2.4" />
+              </svg>
+            </button>
+          )}
+          <section className="sheet" data-hoja={hoja} aria-label="Información del mapa">
+            <button
+              className="sheet-handle m-hoja-manija"
+              aria-label={hoja === "baja" ? "Subir panel" : "Bajar panel"}
+              onPointerDown={(e) => { arrastre.current = e.clientY; e.currentTarget.setPointerCapture(e.pointerId); }}
+              onPointerUp={(e) => {
+                const y0 = arrastre.current; arrastre.current = null;
+                if (y0 === null) return;
+                const dy = e.clientY - y0;
+                if (dy < -30) moverHoja(1); else if (dy > 30) moverHoja(-1);
+                else setHoja((h) => (h === "baja" ? "media" : "baja"));
+              }}
+              onClick={(e) => { if (e.detail === 0) setHoja((h) => (h === "baja" ? "media" : "baja")); }}   // teclado
+              onKeyDown={(e) => { if (e.key === "ArrowUp") moverHoja(1); if (e.key === "ArrowDown") moverHoja(-1); }}
+            >
+              <span aria-hidden="true" className="grip" />
+              <span className="m-hoja-titulo">
+                {sel?.tipo === "celda" ? "Zona seleccionada" : sel?.tipo === "sitio" ? "Sitio minero" : sel?.tipo === "salud" ? "Centro de salud"
+                  : sel?.tipo === "tramo" ? "Río" : sel?.tipo === "yo" ? "Estás aquí" : "Leyenda y resumen"}
+                <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" data-up={hoja !== "alta"}><path d="M4 10l4-4 4 4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+              </span>
+            </button>
+            <div className="sheet-body">{panel}</div>
+          </section>
+        </>
+      ) : mobile ? (
+        <>
+        {!sheetOpen && (
+          <button className="map-locate-fab" onClick={usarUbicacion} disabled={estado === "ubicando"} aria-label={estado === "ubicando" ? "Ubicando…" : "Ir a mi ubicación"}>
+            <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round">
+              <circle cx="12" cy="12" r="3.2" fill="currentColor" /><circle cx="12" cy="12" r="7.2" /><path d="M12 2.5v2.4M12 19.1v2.4M2.5 12h2.4M19.1 12h2.4" />
+            </svg>
+          </button>
+        )}
         <section className="sheet" data-open={sheetOpen} aria-label="Información del mapa">
           <button className="sheet-handle" onClick={() => setSheetOpen((o) => !o)} aria-expanded={sheetOpen}>
             <span aria-hidden="true" className="grip" />
@@ -304,10 +442,11 @@ export default function MapPage() {
               </button>
             ))}
             <button className="btn btn-pill" aria-pressed={sitios} onClick={() => setSitios((s) => !s)}>Sitios</button>
-            <button className="btn btn-pill" onClick={usarUbicacion}>Mi ubicación</button>
+            <button className="btn btn-pill" aria-pressed={salud} onClick={() => setSalud((v) => !v)} style={{ whiteSpace: "nowrap" }}>Centros de salud</button>
           </div>
           <div className="sheet-body">{panel}</div>
         </section>
+        </>
       ) : (
         <>
           <aside className="map-panel" aria-label="Información del mapa">{panel}</aside>
@@ -330,8 +469,11 @@ function distKm(a: { lat: number; lon: number }, b: { lat: number; lon: number }
   return 2 * R * Math.asin(Math.sqrt(x));
 }
 
-function YoInfo({ pos, zona, celdas, onClose, onCelda }: {
-  pos: Posicion | null; zona: Zona | null; celdas: Celda[]; onClose: () => void; onCelda: (h3: string) => void;
+type Centro = SaludProps & { lat: number; lon: number };
+
+function YoInfo({ pos, zona, celdas, centros, onClose, onCelda, onCentro }: {
+  pos: Posicion | null; zona: Zona | null; celdas: Celda[]; centros: Centro[];
+  onClose: () => void; onCelda: (h3: string) => void; onCentro: (c: Centro) => void;
 }) {
   if (!pos || !zona) return <div className="stack"><CloseBtn onClose={onClose} /><Skeleton lines={3} /></div>;
   const conDatos = zona.nivel !== "sin_datos";
@@ -368,7 +510,73 @@ function YoInfo({ pos, zona, celdas, onClose, onCelda }: {
           )}
         </>
       )}
+      <CentroCercano pos={pos} centros={centros} onCentro={onCentro} />
       <p className="caption muted">Tu posición exacta solo se usa en este teléfono para dibujar el punto; no se envía a ningún lado. Precisión ≈ {num(pos.precision)} m.</p>
+    </div>
+  );
+}
+
+function CentroCercano({ pos, centros, onCentro }: { pos: Posicion; centros: Centro[]; onCentro: (c: Centro) => void }) {
+  if (!centros.length) return null;
+  let mejor: { c: Centro; km: number } | null = null;
+  for (const c of centros) {
+    const km = distKm(pos, c);
+    if (!mejor || km < mejor.km) mejor = { c, km };
+  }
+  if (!mejor) return null;
+  return (
+    <div className="salud-cerca">
+      <IconoSalud hospital={mejor.c.tipo === "Hospital"} />
+      <div className="stack" style={{ gap: 2, minWidth: 0 }}>
+        <span className="small muted">Centro de salud más cercano</span>
+        <span style={{ fontWeight: 500 }}>{mejor.c.name}</span>
+        <span className="small muted num">{mejor.km < 1 ? "A menos de 1 km" : `A ${num(mejor.km)} km en línea recta`}</span>
+      </div>
+      <button className="btn btn-pill" onClick={() => onCentro(mejor!.c)}>Ver</button>
+    </div>
+  );
+}
+
+function IconoSalud({ hospital = false, size = 22 }: { hospital?: boolean; size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 22 22" aria-hidden="true" style={{ flex: "none" }}>
+      <rect x="1" y="1" width="20" height="20" rx="4.4" fill={hospital ? "#006434" : "#fff"} stroke={hospital ? "#fff" : "#006434"} strokeWidth="2" />
+      {hospital && <rect x="0.5" y="0.5" width="21" height="21" rx="4.8" fill="none" stroke="#006434" strokeWidth="1" />}
+      <path d="M9.1 4.8h3.8v4.3h4.3v3.8h-4.3v4.3H9.1v-4.3H4.8V9.1h4.3z" fill={hospital ? "#fff" : "#006434"} />
+    </svg>
+  );
+}
+
+function SaludInfo({ c, lat, lon, pos, onClose }: { c: SaludProps; lat: number; lon: number; pos: Posicion | null; onClose: () => void }) {
+  const km = pos ? distKm(pos, { lat, lon }) : null;
+  const tel = c.phone?.split(/[;,]/)[0].trim() || null;
+  return (
+    <div className="stack">
+      <CloseBtn onClose={onClose} />
+      <div className="row" style={{ gap: 10 }}>
+        <IconoSalud hospital={c.tipo === "Hospital"} size={26} />
+        <span className="tag">{c.tipo}</span>
+        <SyntheticTag show={c.sintetico} />
+      </div>
+      <h3>{c.name}</h3>
+      {km !== null && <p className="muted num">{km < 1 ? "A menos de 1 km de ti" : `A ${num(km)} km de ti en línea recta`}</p>}
+      <div className="stack" style={{ gap: 10 }}>
+        {tel && (
+          <a className="btn btn-block" href={`tel:${tel.replace(/[^\d+]/g, "")}`}>
+            <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24c1.12.37 2.33.57 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1C10.61 21 3 13.39 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02l-2.2 2.2z" /></svg>
+            Llamar {tel}
+          </a>
+        )}
+        <a className="btn btn-pill btn-block" href={comoLlegar(lat, lon)} target="_blank" rel="noopener noreferrer">Cómo llegar ↗</a>
+      </div>
+      <p className="small">
+        Si alguien tiene síntomas de intoxicación por mercurio (temblores, hormigueo, dolor de cabeza fuerte, problemas para ver o caminar):
+        que se aleje de la fuente y acuda a este centro. No provoques el vómito.
+      </p>
+      <p className="caption muted">
+        Datos de OpenStreetMap{c.osm_id ? ` (${c.osm_id})` : ""}: pueden faltar centros o haber cambiado el horario o el teléfono.
+        {!tel && " No tenemos su teléfono."}
+      </p>
     </div>
   );
 }
@@ -396,7 +604,7 @@ function PanelContent({ sel, capa, stats, ready, error, onClose, onComunidad }: 
         </p>
       )}
       <Legend capa={capa} />
-      <p className="small muted">Toca una zona, un río o un sitio para ver el detalle. Busca tu comunidad arriba para ver su ficha.</p>
+      <p className="small muted">Toca una zona, un río, un sitio o un centro de salud para ver el detalle. Busca tu comunidad arriba para ver su ficha.</p>
     </div>
   );
 }
@@ -410,6 +618,7 @@ function Legend({ capa }: { capa: Capa }) {
         <div className="legend-row"><span className="sw" style={{ background: "var(--risk-bajo)", opacity: 0.6 }} />Riesgo bajo</div>
         <div className="legend-row"><span className="sw sw-pale" />Color pálido: no sabemos bien, faltan muestras</div>
         <div className="legend-row"><span className="sw sw-dot" />Sitio minero · <span className="sw sw-dot sw-ap" /> en área protegida</div>
+        <LeyendaSalud />
       </div>
     );
   }
@@ -422,7 +631,14 @@ function Legend({ capa }: { capa: Capa }) {
         {m.nombre}: mediana estimada por tramo, en {m.unidad}. Los tramos tenues tienen un rango muy amplio: no sabemos bien.
         {capa === "pez" && " Valor de un pez carnívoro de referencia (surubí, dorado)."}
       </p>
+      <LeyendaSalud />
     </div>
+  );
+}
+
+function LeyendaSalud() {
+  return (
+    <div className="legend-row"><IconoSalud size={16} />Centro de salud · <IconoSalud hospital size={16} /> hospital</div>
   );
 }
 

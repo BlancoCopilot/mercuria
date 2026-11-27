@@ -206,6 +206,7 @@
 .chat-panel-title span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .chat-panel-title strong { font-weight: 500; }
 .chat-panel .thread { grid-template-rows: minmax(0, 1fr) auto; gap: 0; min-height: 0; height: 100%; }
+.thread-scroll > .tabs { margin-bottom: var(--s-20); }
 .chat-panel .thread-scroll { overflow-y: auto; overscroll-behavior: contain; padding: 16px; }
 .chat-panel .chat { gap: 12px; }
 .chat-panel .msg { font-size: var(--text-body-sm); padding: 12px 14px; }
@@ -232,8 +233,9 @@
   .chat-panel { inset: 0; width: auto; height: 100dvh; border-radius: 0; border: 0; animation: sheet-in 240ms var(--ease-out); }
   @keyframes sheet-in { from { transform: translateY(24px); opacity: 0; } }
   .fab[data-open="true"] { display: none; }
-  .fab { right: 14px; bottom: 14px; width: 64px; height: 64px; }
-  .fab-hint { right: 86px; bottom: 24px; }
+  .fab { right: 12px; bottom: 12px; width: 56px; height: 56px; }
+  .fab > .mascot { height: 46px; width: auto; }
+  .fab-hint { right: 78px; bottom: 20px; }
   .ask-row { padding-bottom: calc(10px + env(safe-area-inset-bottom)); }
 }
 @media (prefers-reduced-motion: reduce) { .fab-hint, .chat-panel { animation: none; } .fab:hover { transform: none; } }
@@ -258,12 +260,18 @@
   .loc-bar, .loc-alert { width: calc(100% - 24px); gap: 10px; padding: 12px 14px; position: relative; }
   .loc-ask, .loc-alert { flex-wrap: wrap; }
   .loc-ask .loc-actions, .loc-alert .loc-actions { width: 100%; }
-  .loc-bar > svg { display: none; }
   .loc-alert { padding-right: 48px; }
   .loc-alert .loc-close { position: absolute; top: 6px; right: 6px; min-height: 36px; padding: 4px 12px; font-size: 20px; }
   .loc-alert-title { font-size: var(--text-body); }
 }
 @media (max-width: 720px) {
+  /* gota + texto arriba, botones debajo alineados con el texto, × en la esquina */
+  .loc-bar { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 12px; row-gap: 10px; align-items: start; padding: 12px 44px 12px 14px; }
+  .loc-bar > svg { margin-top: 2px; }
+  .loc-bar > p { grid-column: 2; }
+  .loc-bar .loc-actions { grid-column: 2; width: auto; }
+  .loc-bar .loc-actions .btn { min-height: 40px; padding: 8px 16px; font-size: var(--text-body-sm); }
+  .loc-bar:not(.loc-ask) .loc-close { position: absolute; top: 4px; right: 4px; min-height: 36px; padding: 4px 12px; font-size: 20px; }
   .loc-consejo { display: none; }
   .loc-alert .loc-actions .btn { min-height: 40px; padding: 8px 16px; font-size: var(--text-body-sm); }
 }
@@ -329,7 +337,7 @@
 .call-kicker { display: inline-flex; gap: 6px; align-items: center; color: var(--charcoal-70); }
 .call-timer { font-size: var(--text-body); font-variant-numeric: tabular-nums; letter-spacing: 0.02em; }
 .call-center { display: grid; justify-items: center; text-align: center; gap: 6px; padding-top: 12px; }
-.call-name { font-size: var(--text-h); font-weight: 300; margin: 14px 0 0; letter-spacing: -0.01em; }
+.call-name { font-size: var(--text-h); margin: 14px 0 0; }
 .call-status { margin: 0; min-height: 1.5em; color: var(--charcoal-70); font-size: var(--text-body); }
 .call-status-error { color: var(--ember-ink); max-width: 30ch; }
 .call-warn { margin: 0; font-size: var(--text-caption); color: var(--ember-ink); }
@@ -386,4 +394,49 @@
 @media (prefers-reduced-motion: reduce) {
   .call, .call-backdrop { animation: none; }
   .call-ring-2 { animation: none !important; }
+}
+
+/* Reportar en el celular: primero el lugar, para que nadie envíe sin marcarlo */
+@media (max-width: 720px) {
+  .report-lugar { order: -1; }
+  .form-panel { padding: var(--s-20); }
+}
+/* con el menú del celular abierto, Gota no se encima a los enlaces */
+body:has(.nav-links[data-open="true"]) .fab, body:has(.nav-links[data-open="true"]) .fab-hint { display: none; }
+
+/* Mapa: centro de salud más cercano (en "Estás aquí") */
+.salud-cerca { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: var(--r-chip); background: var(--snow); }
+.salud-cerca > .stack { flex: 1; }
+
+/* Mapa en el celular: "mi ubicación" flotante sobre el mapa, a la izquierda (a la derecha va Gota) */
+.map-locate-fab {
+  position: absolute; z-index: var(--z-map-ui); left: 12px; bottom: 144px;
+  width: 52px; height: 52px; border-radius: 50%; border: 1px solid var(--charcoal-20);
+  background: var(--paper); color: var(--pine); display: grid; place-items: center; cursor: pointer;
+}
+.map-locate-fab:disabled { color: var(--charcoal-70); cursor: progress; }
+.map-locate-fab:active { transform: scale(0.96); }
+
+/* Descargar la app (Android): solo en la barra de navegación */
+.nav-links .nav-descargar {
+  display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 8px 16px;
+  border: 1px solid var(--pine); border-radius: var(--r-pill); color: var(--pine);
+  font-size: var(--text-body-sm); font-weight: 500; white-space: nowrap; text-decoration: none;
+  transition: background var(--dur) var(--ease-out), color var(--dur) var(--ease-out);
+}
+.nav-links .nav-descargar:hover { background: var(--pine); color: var(--snow); border-color: var(--pine); }
+.nav-descargar-largo { display: none; }
+/* computadora angosta: solo el ícono (el nombre queda en title y para lectores de pantalla) */
+@media (min-width: 1181px) and (max-width: 1340px) {
+  .nav-links .nav-descargar { width: 40px; padding: 0; justify-content: center; }
+  .nav-descargar-corto { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+}
+@media (max-width: 1180px) {
+  .nav-links .nav-descargar {
+    border: 0; border-radius: 0; padding: var(--s-16) 0; min-height: 0; font-size: var(--text-sub);
+    border-bottom: 1px solid var(--charcoal-10); gap: 10px;
+  }
+  .nav-links .nav-descargar:hover { background: transparent; color: var(--pine); }
+  .nav-descargar-corto { display: none; }
+  .nav-descargar-largo { display: inline; }
 }

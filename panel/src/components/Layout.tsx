@@ -8,6 +8,7 @@ import { Drop } from "./Mascot";
 import { CallScreen } from "./CallScreen";
 import { ChatWidget } from "./ChatWidget";
 import { LocationAlert } from "./LocationAlert";
+import { DescargarApp } from "./DescargarApp";
 
 function Announce() {
   const { data } = useApi<MapVersion>("/v1/map/version");
@@ -26,7 +27,8 @@ function Announce() {
         <span className="hide-sm">Mapa versión <span className="num">{data.version}</span>, actualizado {hace(data.created_at)}. Toda cifra es una estimación con su rango.</span>
         <span className="show-sm">Mapa v<span className="num">{data.version}</span> · {hace(data.created_at)}</span>
       </span>
-      <Link to="/denunciar"><span className="hide-sm">Reportar minería o peces muertos →</span><span className="show-sm">Reportar →</span></Link>
+      {/* en el celular sobra: el botón "Avisar" ya está en la barra */}
+      <Link to="/denunciar" className="hide-sm">Reportar minería o peces muertos →</Link>
       <button className="btn-quiet" style={{ minHeight: 28, padding: "0 8px", border: 0, background: "transparent", cursor: "pointer" }} aria-label="Cerrar aviso" onClick={close}>×</button>
     </div>
   );
@@ -40,8 +42,8 @@ function Nav() {
 
   const links: { to: string; label: string; show: boolean }[] = [
     { to: "/", label: "Mapa", show: true },
-    { to: "/comunidades", label: "Mi comunidad", show: true },
     { to: "/preguntar", label: "Preguntar", show: true },
+    { to: "/informate", label: "Infórmate", show: true },
     { to: "/datos", label: "Datos abiertos", show: true },
     { to: "/aportar", label: "Aportar datos", show: !user || can("investigador") },
     { to: "/panel", label: "Decisión", show: can("autoridad") },
@@ -77,7 +79,17 @@ function Nav() {
           ) : (
             <Link className="btn btn-pill" to="/ingresar">Ingresar</Link>
           )}
+          <DescargarApp />
         </div>
+        {/* siempre a la vista, también en el celular (fuera del menú) */}
+        <NavLink to="/denunciar" className="nav-aviso" title="Avisa de minería nueva, peces muertos o agua turbia sin dar tu nombre">
+          <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M3 10v4a1 1 0 0 0 1 1h3l6 4V5L7 9H4a1 1 0 0 0-1 1z" />
+            <path d="M17 9a4 4 0 0 1 0 6M19.5 6.5a8 8 0 0 1 0 11" />
+          </svg>
+          <span className="hide-sm">Aviso anónimo</span>
+          <span className="show-sm">Avisar</span>
+        </NavLink>
       </nav>
     </header>
   );
@@ -92,7 +104,6 @@ export function Footer() {
       </div>
       <div className="stack" style={{ gap: 8 }}>
         <span className="meta">Comunidades</span>
-        <Link to="/comunidades">Ficha de mi comunidad</Link>
         <Link to="/denunciar">Reportar de forma anónima</Link>
         <Link to="/preguntar">Hacer una pregunta</Link>
       </div>

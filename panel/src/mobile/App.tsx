@@ -1,15 +1,20 @@
-import { useEffect, useState, type ReactElement } from "react";
-import { IconAvisar, IconPreguntar, IconZona } from "./icons";
+import { lazy, Suspense, useCallback, useEffect, useState, type ReactElement } from "react";
+import { IconAvisar, IconMapa, IconPreguntar, IconZona } from "./icons";
+import { CallScreen } from "../components/CallScreen";
 import { alAtras } from "./native";
 import { useAlertas } from "./useAlertas";
 import { ZonaScreen } from "./ZonaScreen";
 import { PreguntarScreen } from "./PreguntarScreen";
 import { AvisarScreen } from "./AvisarScreen";
 
-export type Tab = "zona" | "preguntar" | "avisar";
+// el mapa (MapLibre) es lo más pesado: se carga la primera vez que se abre la pestaña
+const MapaScreen = lazy(() => import("./MapaScreen"));
+
+export type Tab = "zona" | "mapa" | "preguntar" | "avisar";
 
 const TABS: { id: Tab; label: string; icon: () => ReactElement }[] = [
   { id: "zona", label: "Mi zona", icon: IconZona },
+  { id: "mapa", label: "Mapa", icon: IconMapa },
   { id: "preguntar", label: "Preguntar", icon: IconPreguntar },
   { id: "avisar", label: "Avisar", icon: IconAvisar },
 ];
@@ -26,10 +31,18 @@ export function App() {
     return true;
   }), [tab]);
 
+  const aZona = useCallback(() => setTab("zona"), []);
+
   return (
     <div className="m-app">
-      <main className="m-screen" data-tab={tab}>
+      {/* key: cada pestaña empieza arriba (si no, hereda el desplazamiento de la anterior) */}
+      <main className="m-screen" data-tab={tab} key={tab}>
         {tab === "zona" && <ZonaScreen alertas={alertas} onPreguntar={() => setTab("preguntar")} />}
+        {tab === "mapa" && (
+          <Suspense fallback={<div className="m-mapa-cargando"><span className="skeleton" style={{ height: 120 }} /></div>}>
+            <MapaScreen onFicha={aZona} />
+          </Suspense>
+        )}
         {tab === "preguntar" && <PreguntarScreen />}
         {tab === "avisar" && <AvisarScreen />}
       </main>
@@ -41,6 +54,8 @@ export function App() {
           </button>
         ))}
       </nav>
+      {/* la misma pantalla de llamada que en la web: con colgar, silenciar, cronómetro y subtítulos */}
+      <CallScreen />
     </div>
   );
 }

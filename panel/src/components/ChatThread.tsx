@@ -1,7 +1,13 @@
 import { useEffect, useRef } from "react";
 import { useChat, type Fuente } from "../lib/chat";
-import { Mascot, type Mood } from "./Mascot";
+import type { Mood } from "./Mascot";
 import { PhoneIcon } from "./CallScreen";
+import { GotaImg } from "./GotaImg";
+
+
+/** El modelo marca con [n] el fragmento que usó (sirve para elegir las fuentes); al leer no dicen nada:
+ *  las fuentes ya van abajo como etiquetas. */
+const sinCitas = (t: string) => t.replace(/\s*(?:\[\d+(?:\s*,\s*\d+)*\])+/g, "").replace(/ +([.,;:!?])/g, "$1");
 
 export const TEMAS = [
   { id: null, label: "Todo" }, { id: "peces", label: "Pescado" }, { id: "salud", label: "Salud" },
@@ -101,9 +107,9 @@ export function ChatThread({ compact, autoFocus }: { compact?: boolean; autoFocu
             <div key={i} className="msg msg-user">{t.voz && <span className="msg-voz" title="Dicho por voz"><MicIcon /></span>}{t.texto}</div>
           ) : (
             <div key={i} className="msg-row">
-              <span className="avatar"><Mascot size={compact ? 30 : 36} label="Gota" still /></span>
+              <span className="avatar"><GotaImg size={compact ? 40 : 50} label="Gota" still /></span>
               <div className="msg msg-bot">
-                {t.texto}
+                {sinCitas(t.texto)}
                 {t.fuentes && t.fuentes.length > 0 && (
                   <div className="fuentes">
                     {unicas(t.fuentes).slice(0, 5).map((f, j) => f.url ? (
@@ -123,7 +129,7 @@ export function ChatThread({ compact, autoFocus }: { compact?: boolean; autoFocu
           ))}
           {busy && (
             <div className="msg-row">
-              <span className="avatar"><Mascot size={compact ? 30 : 36} mood="thinking" label="Gota pensando" /></span>
+              <span className="avatar"><GotaImg size={compact ? 40 : 50} mood="thinking" label="Gota pensando" /></span>
               <div className="msg msg-bot"><span className="skeleton" style={{ display: "block", width: 160, height: 14 }} /></div>
             </div>
           )}

@@ -6,3 +6,9 @@ services:
     ports: !override ["127.0.0.1:8090:80"]
     environment:
       DOMAIN: ":80"
+
+  # Detrás de Cloudflare, la IP real llega en CF-Connecting-IP (Caddy reemplaza X-Forwarded-For por la del
+  # túnel). Seguro aquí porque Caddy solo escucha en 127.0.0.1: nadie puede saltarse el túnel y falsificarla.
+  api:
+    environment:
+      IP_HEADER: cf-connecting-ip

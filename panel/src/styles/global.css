@@ -13,10 +13,13 @@ body {
   letter-spacing: -0.005em;
   -webkit-font-smoothing: antialiased;
 }
-h1, h2, h3, h4 { font-weight: 300; margin: 0; text-wrap: balance; }
-h1 { font-size: var(--text-display); line-height: 0.98; letter-spacing: -0.02em; }
-h2 { font-size: var(--text-h); line-height: 1.07; letter-spacing: -0.015em; }
-h3 { font-size: var(--text-h-sm); line-height: 1.15; letter-spacing: -0.015em; }
+h1, h2, h3, h4 { margin: 0; text-wrap: balance; }
+/* Abril Fatface solo trae peso 400: sin negrita ni cursiva falsas, y sin apretar el espaciado (sus trazos finos se tocan) */
+h1, h2, h3 { font-family: var(--font-display); font-weight: 400; font-synthesis: none; letter-spacing: 0.005em; }
+h4 { font-weight: 500; }
+h1 { font-size: var(--text-display); line-height: 1.05; }
+h2 { font-size: var(--text-h); line-height: 1.12; }
+h3 { font-size: var(--text-h-sm); line-height: 1.2; }
 p { margin: 0; text-wrap: pretty; }
 a { color: var(--pine); text-underline-offset: 3px; }
 button, input, select, textarea { font: inherit; color: inherit; letter-spacing: inherit; }
@@ -78,9 +81,9 @@ img { max-width: 100%; display: block; }
 }
 .wordmark img { display: block; height: 32px; width: auto; }
 @media (max-width: 720px) { .wordmark img { height: 26px; } }
-.nav-links { display: flex; align-items: center; gap: var(--s-20); }
+.nav-links { display: flex; align-items: center; gap: var(--s-16); }
 .nav-links a {
-  color: var(--charcoal); text-decoration: none; font-size: var(--text-body);
+  color: var(--charcoal); text-decoration: none; font-size: var(--text-body); white-space: nowrap;
   padding: var(--s-6) 0; border-bottom: 1.5px solid transparent;
   transition: border-color var(--dur) var(--ease-out);
 }
@@ -89,9 +92,24 @@ img { max-width: 100%; display: block; }
 .nav-links .btn-pill { padding: 8px 18px; border: 1px solid var(--charcoal); min-height: 40px; }
 .nav-links .btn-pill:hover { border-color: var(--charcoal); }
 .nav .nav-toggle { display: none; }
-@media (max-width: 900px) {
+.nav-links { margin-left: auto; }
+/* Aviso anónimo: la acción ciudadana, siempre a la vista (ember-ink + blanco = 6:1) */
+.nav-aviso {
+  display: inline-flex; align-items: center; gap: var(--s-8); flex: none;
+  min-height: 44px; padding: 0 20px 0 16px; border-radius: var(--r-pill);
+  background: var(--ember-ink); color: var(--snow); border: 1px solid var(--ember-ink);
+  font-size: var(--text-body-sm); font-weight: 500; text-decoration: none; white-space: nowrap;
+  transition: background var(--dur) var(--ease-out), color var(--dur) var(--ease-out);
+}
+.nav-aviso:hover { background: #8a3100; border-color: #8a3100; }
+.nav-aviso:active { transform: translateY(1px); }
+.nav-aviso[aria-current="page"] { background: transparent; color: var(--ember-ink); }
+/* la barra se pliega al menú ☰ bajo 1180 px: con 6 enlaces + Ingresar + Descargar + Aviso no cabe en una línea */
+@media (max-width: 1180px) {
   .nav { padding: 0 var(--s-16); }
-  .nav .nav-toggle { display: inline-flex; }
+  .nav { gap: var(--s-12); }
+  .nav .nav-toggle { display: inline-flex; order: 2; }
+  .nav-aviso { order: 1; margin-left: auto; padding: 0 16px 0 12px; }
   .nav-links {
     position: fixed; inset: calc(var(--nav-h) + var(--bar-h)) 0 auto 0; z-index: var(--z-menu);
     flex-direction: column; align-items: stretch; gap: 0;
@@ -101,6 +119,8 @@ img { max-width: 100%; display: block; }
     transition: opacity var(--dur) var(--ease-out), transform var(--dur) var(--ease-out), visibility 0s linear var(--dur);
   }
   .nav-links[data-open="true"] { transform: none; opacity: 1; visibility: visible; transition-delay: 0s; }
+  /* menú abierto: ocupa toda la pantalla bajo la barra (antes se veía la página cortada debajo) */
+  .nav-links { bottom: 0; overflow-y: auto; overscroll-behavior: contain; border-bottom: 0; }
   .nav-links a { padding: var(--s-16) 0; font-size: var(--text-sub); border-bottom: 1px solid var(--charcoal-10); }
   .nav-links a[aria-current="page"] { border-color: var(--charcoal-10); font-weight: 500; }
 }
@@ -149,6 +169,7 @@ img { max-width: 100%; display: block; }
 }
 .marigold-bar .field:first-child { border-left: 0; padding-left: 0; }
 .marigold-bar .btn { align-self: center; margin-left: var(--s-12); }
+.marigold-bar .btn:disabled { opacity: 1; background: rgb(35 33 44 / 0.1); border-color: transparent; color: var(--charcoal-70); }
 @media (max-width: 720px) {
   .marigold-bar { flex-direction: column; border-radius: var(--r-card); padding: var(--s-16); gap: var(--s-12); }
   .marigold-bar .field { border-left: 0; padding: 0; }

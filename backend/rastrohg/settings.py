@@ -39,6 +39,10 @@ class Settings(BaseSettings):
     research_max_pdf_mb: int = 40
     research_reasoning_effort: str = "low"        # "medium" tardó 4 min y devolvió JSON duplicado en pruebas
     chat_per_ip_hour: int = 30
+    # Cabecera con la IP real de quien llama, puesta por un proxy de confianza. Detrás del túnel de
+    # Cloudflare: "cf-connecting-ip" (sin esto, todos comparten la IP del túnel y los límites "por
+    # persona" son en realidad globales). Vacío = X-Forwarded-For / IP directa (desarrollo local).
+    ip_header: str = ""
     chat_web_search: bool = True                  # si los documentos no responden, el modelo busca en internet
 
     # Voz en tiempo real (GPT-Live por WebRTC; el modelo de texto hace la búsqueda en documentos e internet)
@@ -47,7 +51,7 @@ class Settings(BaseSettings):
     live_backend_model: str = ""                  # "" = rag_model
     live_idle_timeout_s: int = 20                 # tras este silencio la sesión pasa a espera (más barata)
     live_max_minutes: int = 5                     # el navegador corta la llamada a los N minutos
-    live_per_ip_hour: int = 6
+    live_per_ip_hour: int = 15
     live_global_per_hour: int = 60                # tope para toda la app (la clave de OpenAI es una sola)
 
     # Límites anti-abuso

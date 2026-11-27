@@ -68,7 +68,7 @@ export function LocationAlert() {
       <p>
         {zona.nivel === "bajo"
           ? <>Tu zona{lugar}: riesgo <strong>bajo</strong> por mercurio{zona.peorVecino === "medio" ? ", con una zona de riesgo medio cerca" : ""}.</>
-          : <>No tenemos estimación para tu ubicación: está fuera de la cuenca piloto o lejos de los ríos que modelamos. Puedes verla en el mapa.</>}
+          : <>No tenemos estimación para tu ubicación: está fuera de la cuenca piloto o lejos de los ríos que modelamos.</>}
       </p>
       <div className="loc-actions">
         {ficha && zona.nivel === "bajo" && <Link className="btn btn-pill" to={ficha} onClick={cerrarAviso}>Ver ficha</Link>}

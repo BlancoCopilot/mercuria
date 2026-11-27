@@ -7,6 +7,7 @@ const Svg = ({ children, size = 24 }: { children: ReactNode; size?: number }) =>
 );
 
 export const IconZona = () => <Svg><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z" /><circle cx="12" cy="10" r="2.4" /></Svg>;
+export const IconMapa = () => <Svg><path d="M3.5 6.5l5.5-2 6 2 5.5-2v13l-5.5 2-6-2-5.5 2z" /><path d="M9 4.5v13M15 6.5v13" /></Svg>;
 export const IconPreguntar = () => <Svg><path d="M4.5 18.5V7a2.5 2.5 0 0 1 2.5-2.5h10A2.5 2.5 0 0 1 19.5 7v7a2.5 2.5 0 0 1-2.5 2.5H8.2z" /><path d="M9 9.6a3 3 0 0 1 5.6 1.1c0 1.6-2.4 2-2.4 2" /><path d="M12.2 15h.01" /></Svg>;
 export const IconAvisar = () => <Svg><path d="M4 10.2v3.6a1 1 0 0 0 1 1h2.4l6.6 4V5.2l-6.6 4H5a1 1 0 0 0-1 1z" /><path d="M17.4 9a4.2 4.2 0 0 1 0 6M19.8 6.6a7.6 7.6 0 0 1 0 10.8" /></Svg>;
 export const IconAltavoz = ({ size = 22 }: { size?: number }) => <Svg size={size}><path d="M4 9.8v4.4h3.2L12 18V6L7.2 9.8z" /><path d="M15.4 9.2a4 4 0 0 1 0 5.6M17.8 6.8a7.4 7.4 0 0 1 0 10.4" /></Svg>;

@@ -92,7 +92,7 @@ export interface Ficha {
   comunidad: { id: number; nombre: string; h3: string; poblacion: number | null; sintetico: boolean };
   idioma: string; nivel: Nivel; confianza: number | null; palida: boolean; version_mapa: number | null;
   frases: Frase[]; peces: Pez[];
-  centro_salud: { id: number; name: string; phone: string | null; level: string | null; km: number } | null;
+  centro_salud: { id: number; name: string; phone: string | null; level: string | null; km: number; lat?: number; lon?: number } | null;
   aviso: string;
 }
 export interface SitioProps {

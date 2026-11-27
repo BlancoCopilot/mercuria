@@ -75,7 +75,7 @@ def community_card(conn: Connection, settlement_id: int, lang: str = "es") -> di
     peces = fish_advice(est["log_mu"], est["log_sd"], especies, cfg) if est else []
 
     centro = one(conn, """
-        SELECT id, name, phone, level,
+        SELECT id, name, phone, level, ST_Y(geom) AS lat, ST_X(geom) AS lon,
                ST_Distance(geom::geography, ST_SetSRID(ST_MakePoint(:lon, :lat), 4326)::geography) / 1000 AS km
         FROM health_facility ORDER BY geom <-> ST_SetSRID(ST_MakePoint(:lon, :lat), 4326) LIMIT 1""",
         lon=s["lon"], lat=s["lat"])

@@ -1,0 +1,64 @@
+/* ── Gota animada (mascota flotante, arrastrable) ───────────────────
+   Va sobre .fab sin tocar sus reglas: el botón deja de ser un círculo y Gota queda de pie.
+   Si la arrastras, su posición se guarda en el navegador (estilo en línea right/bottom). */
+.fab.fab-pet.fab-pet {
+  width: 184px; height: 204px; border: 0; border-radius: 0; background: transparent;
+  padding: 0; place-items: end center; overflow: visible;
+}
+.fab.fab-pet.fab-pet:hover { background: transparent; transform: none; }
+.fab.fab-pet.fab-pet[data-open="true"] { background: transparent; }
+.fab.fab-pet.fab-pet[data-open="true"]::after {
+  content: ""; position: absolute; left: 52px; right: 52px; bottom: -2px; height: 4px;
+  border-radius: 4px; background: var(--marigold);
+}
+.fab.fab-pet:focus-visible { outline: 2px solid var(--charcoal); outline-offset: 4px; border-radius: 16px; }
+
+.gota-anim {
+  width: 184px; height: 202px; object-fit: contain; display: block;
+  cursor: grab; touch-action: none; user-select: none; -webkit-user-drag: none;
+  filter: drop-shadow(0 5px 4px rgba(35, 33, 44, 0.18));
+  animation: gota-flota 3.2s ease-in-out infinite;
+  transition: transform 160ms var(--ease-out);
+}
+.gota-anim:hover { transform: translateY(-4px) rotate(-2deg); }
+.gota-anim[data-arrastrando] { cursor: grabbing; animation: none; transform: rotate(-6deg) scale(1.06); filter: drop-shadow(0 12px 8px rgba(35, 33, 44, 0.22)); }
+.gota-anim[data-reaccion="caminando"]:not([data-arrastrando]) { animation: gota-camina 1.2s ease-in-out; }
+.gota-anim[data-reaccion="asustado"] { animation: gota-tiembla 0.5s ease-in-out 2; }
+@keyframes gota-flota { 50% { transform: translateY(-3px); } }
+@keyframes gota-camina { 0% { transform: translateX(0); } 45% { transform: translateX(-34px); } 100% { transform: translateX(0); } }
+@keyframes gota-tiembla { 25% { transform: translateX(-2px); } 75% { transform: translateX(2px); } }
+
+/* Globo: sale al costado de Gota y la sigue cuando la mueves */
+.gota-globo {
+  position: absolute; right: calc(100% + 4px); bottom: 62%; width: max-content; max-width: 220px;
+  background: var(--snow); color: var(--charcoal); border: 1px solid var(--charcoal-20);
+  border-radius: var(--r-card) var(--r-card) 6px var(--r-card); padding: 9px 13px;
+  font-size: var(--text-body-sm); line-height: 1.35; text-align: left; pointer-events: none;
+  animation: gota-globo-in 260ms var(--ease-out) both;
+}
+.gota-globo[data-lado="der"] { right: auto; left: calc(100% + 4px); border-radius: var(--r-card) var(--r-card) var(--r-card) 6px; }
+@keyframes gota-globo-in { from { opacity: 0; transform: translateY(6px) scale(0.96); } }
+
+/* Pantalla de llamada: Gota delante de los anillos */
+.call-avatar .gota-img { position: relative; z-index: 1; }
+
+/* El chat abierto y la invitación se acomodan al nuevo tamaño de Gota */
+@media (min-width: 721px) {
+  body:has(.fab-pet) .chat-panel { bottom: 232px; height: min(620px, calc(100dvh - 262px)); }
+}
+body:has(.fab-pet) .fab-hint { right: calc(var(--gota-r, 20px) + 186px); bottom: calc(var(--gota-b, 20px) + 104px); }
+
+@media (max-width: 720px) {
+  .fab.fab-pet.fab-pet { width: 136px; height: 152px; right: 10px; bottom: 10px; }
+  .gota-anim { width: 136px; height: 150px; }
+  .gota-globo { max-width: 180px; }
+  body:has(.fab-pet) .fab-hint { right: calc(var(--gota-r, 10px) + 138px); bottom: calc(var(--gota-b, 10px) + 74px); }
+  body:has(.map-page) .fab.fab-pet.fab-pet { bottom: 140px; }
+  body:has(.map-page):has(.fab-pet) .fab-hint { bottom: calc(var(--gota-b, 140px) + 74px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gota-anim, .gota-anim[data-reaccion] { animation: none; transition: none; }
+  .gota-anim:hover { transform: none; }
+  .gota-globo { animation: none; }
+}

@@ -87,17 +87,27 @@ def optional_device(db: DbDep, x_device_token: str | None = Header(default=None)
     return one(db.conn, "SELECT id, lang FROM device WHERE token_hash = :h", h=hash_device_token(x_device_token))
 
 
-def rate_limit(key: str, limit: int, window_s: int = 3600) -> None:
+def rate_limit(key: str, limit: int, window_s: int = 3600, msg: str = "Demasiados envíos. Intenta {cuando}.") -> None:
+    """Ventana fija por clave. `msg` puede usar {cuando} ("en 12 minutos")."""
     r = redis_conn()
     k = f"rastrohg:rl:{key}"
     n = r.incr(k)
     if n == 1:
         r.expire(k, window_s)
     if n > limit:
-        raise HTTPException(429, "Demasiados envíos. Intente más tarde.")
+        ttl = r.ttl(k)
+        if ttl is None or ttl < 0:          # clave sin vencimiento (no debería pasar): que no quede bloqueada para siempre
+            r.expire(k, window_s)
+            ttl = window_s
+        mins = max(1, -(-ttl // 60))
+        cuando = "en 1 minuto" if mins == 1 else f"en {mins} minutos"
+        raise HTTPException(429, msg.format(cuando=cuando), headers={"Retry-After": str(ttl)})
 
 
 def client_ip_hash(request: Request) -> str:
     """La IP solo se usa, hasheada y de forma transitoria, para limitar registros. No se guarda."""
-    ip = request.headers.get("x-forwarded-for", request.client.host if request.client else "?").split(",")[0]
+    h = get_settings().ip_header
+    ip = (request.headers.get(h) if h else None) \
+        or request.headers.get("x-forwarded-for", request.client.host if request.client else "?").split(",")[0]
+    ip = ip.strip()
     return hashlib.sha256((get_settings().jwt_secret + ip).encode()).hexdigest()[:16]

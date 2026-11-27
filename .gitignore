@@ -35,3 +35,6 @@ data/tiles/*
 # Herramientas locales
 .impeccable/
 .claude/
+
+# Respaldos locales
+*.bak

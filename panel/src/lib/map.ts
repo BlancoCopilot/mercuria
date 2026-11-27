@@ -63,6 +63,12 @@ export function createMap(container: HTMLElement, style: StyleSpecification, opt
   });
   map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "bottom-left");
   map.addControl(new maplibregl.AttributionControl({ compact: true }), "bottom-left");
+  // los créditos empiezan plegados (botón ⓘ): abiertos tapan medio mapa en el celular
+  map.once("load", () => {
+    const at = container.querySelector(".maplibregl-ctrl-attrib");
+    at?.classList.remove("maplibregl-compact-show");
+    at?.removeAttribute("open");
+  });
   return map;
 }
 
@@ -98,3 +104,33 @@ export function centroid(geom: GeoJSON.Geometry): [number, number] | null {
   const s = pts.reduce((a, p) => [a[0] + p[0], a[1] + p[1]], [0, 0]);
   return [s[0] / pts.length, s[1] / pts.length];
 }
+
+// ── Centros de salud ──────────────────────────────────────
+// Íconos dibujados aquí (sin imágenes externas): cruz pino sobre blanco = centro/puesto/consultorio;
+// cruz blanca sobre pino, más grande = hospital. Forma, no color de riesgo: el ember queda para "riesgo alto".
+function iconoSalud(lado: number, hospital: boolean): ImageData {
+  const r = 2, n = lado * r;
+  const c = document.createElement("canvas");
+  c.width = c.height = n;
+  const g = c.getContext("2d")!;
+  const radio = n * 0.2;
+  g.beginPath();
+  g.roundRect(r, r, n - 2 * r, n - 2 * r, radio);
+  g.fillStyle = hospital ? "#006434" : "#ffffff";
+  g.fill();
+  g.lineWidth = 2 * r;
+  g.strokeStyle = hospital ? "#ffffff" : "#006434";
+  g.stroke();
+  const brazo = n * 0.17, largo = n * 0.56, m = n / 2;
+  g.fillStyle = hospital ? "#ffffff" : "#006434";
+  g.fillRect(m - brazo / 2, m - largo / 2, brazo, largo);
+  g.fillRect(m - largo / 2, m - brazo / 2, largo, brazo);
+  return g.getImageData(0, 0, n, n);
+}
+
+export function addIconosSalud(map: maplibregl.Map) {
+  if (!map.hasImage("salud")) map.addImage("salud", iconoSalud(22, false), { pixelRatio: 2 });
+  if (!map.hasImage("salud-h")) map.addImage("salud-h", iconoSalud(26, true), { pixelRatio: 2 });
+}
+
+export interface SaludProps { id: number; name: string; tipo: string; phone: string | null; osm_id: string | null; sintetico: boolean }

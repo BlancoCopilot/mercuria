@@ -21,7 +21,8 @@ router = APIRouter(prefix="/v1/chat", tags=["chatbot"])
 
 @router.post("", response_model=ChatOut)
 def chat(body: ChatIn, db: DbDep, request: Request):
-    rate_limit(f"chat:{client_ip_hash(request)}", get_settings().chat_per_ip_hour)
+    rate_limit(f"chat:{client_ip_hash(request)}", get_settings().chat_per_ip_hour,
+               msg="Hiciste muchas preguntas seguidas. Vuelve a preguntar {cuando}.")
     zone = zone_card(db.conn, body.lat, body.lon, body.comunidad_id)   # la ubicación no se guarda
     return answer(db.conn, body.pregunta.strip(), [t.model_dump() for t in body.historial], body.tema, zone=zone)
 
@@ -42,8 +43,10 @@ def voz(body: VozIn, db: DbDep, request: Request):
     if not s.openai_api_key:
         raise HTTPException(503, "La voz no está disponible: falta configurar OPENAI_API_KEY.")
     ip = client_ip_hash(request)
-    rate_limit(f"voz:{ip}", s.live_per_ip_hour)
-    rate_limit("voz:global", s.live_global_per_hour)
+    rate_limit(f"voz:{ip}", s.live_per_ip_hour,
+               msg=f"Ya hiciste {s.live_per_ip_hour} llamadas en la última hora. Vuelve a llamar {{cuando}}, o escríbele a Gota mientras tanto.")
+    rate_limit("voz:global", s.live_global_per_hour,
+               msg="Gota está atendiendo muchas llamadas ahora. Intenta {cuando}, o escríbele mientras tanto.")
     zone = zone_card(db.conn, body.lat, body.lon, body.comunidad_id)
     import openai
 

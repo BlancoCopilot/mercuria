@@ -2,9 +2,10 @@ import { useEffect, useRef, useState, type ReactElement } from "react";
 import { url, type Comunidad, type Ficha, type Frase, type Nivel, type Pez } from "../lib/api";
 import { useApi } from "../lib/hooks";
 import { useUbicacion } from "../lib/location";
-import { num } from "../lib/format";
+import { comoLlegar, num } from "../lib/format";
 import { CommunitySearch } from "../components/CommunitySearch";
-import { Drop, Mascot } from "../components/Mascot";
+import { Drop } from "../components/Mascot";
+import { GotaImg } from "../components/GotaImg";
 import { IconAltavoz, IconBuscar, IconCampana, IconCheck, IconParar, IconTelefono, IconUbicar } from "./icons";
 import { abrirAjustes, callar, hablar } from "./native";
 import type { useAlertas } from "./useAlertas";
@@ -23,7 +24,7 @@ const GRUPOS = [
   { k: "evitar", titulo: "Embarazadas y niños: no coman", nota: "Tienen más mercurio." },
 ] as const;
 
-const K_COMUNIDAD = "mercuria.comunidad";
+const K_COMUNIDAD = "mercuria.comunidad";   // = K_COMUNIDAD en MapaScreen.tsx
 
 function leerComunidad(): { id: number; name: string } | null {
   if (import.meta.env.DEV) {   // vista previa en el navegador: ?comunidad=11&nombre=Guanay
@@ -173,7 +174,10 @@ function Contenido({ comunidad, lang, usandoGps, nivelGps, cercaAlto, palidaGps,
                 <p className="m-centro-nombre">{data.centro_salud.name}</p>
                 <p className="muted">{data.centro_salud.km < 1 ? "A menos de 1 km" : `A ${num(data.centro_salud.km)} km`}{data.centro_salud.level ? ` · ${data.centro_salud.level}` : ""}</p>
                 {data.centro_salud.phone && (
-                  <a className="btn btn-block" href={`tel:${data.centro_salud.phone.replace(/\s/g, "")}`}><IconTelefono /> Llamar {data.centro_salud.phone}</a>
+                  <a className="btn btn-block" href={`tel:${data.centro_salud.phone.split(/[;,]/)[0].replace(/[^\d+]/g, "")}`}><IconTelefono /> Llamar {data.centro_salud.phone.split(/[;,]/)[0]}</a>
+                )}
+                {data.centro_salud.lat != null && data.centro_salud.lon != null && (
+                  <a className="btn btn-pill btn-block" href={comoLlegar(data.centro_salud.lat, data.centro_salud.lon)} target="_blank" rel="noopener noreferrer">Cómo llegar ↗</a>
                 )}
               </div>
             </section>
@@ -288,7 +292,7 @@ function Bienvenida({ buscando, denegado, sinSenal, onUbicar, onBuscar, onElegir
 }) {
   return (
     <div className="m-page m-bienvenida">
-      <Mascot size={150} mood={buscando ? "listening" : "idle"} />
+      <GotaImg size={170} mood={buscando ? "thinking" : "idle"} />
       {buscando ? (
         <>
           <h1>¿Dónde vives?</h1>

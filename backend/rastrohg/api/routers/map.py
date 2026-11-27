@@ -120,6 +120,21 @@ def sites(db: DbDep, legal_status: str | None = None):
     return {"type": "FeatureCollection", "features": out}
 
 
+@router.get("/salud")
+def salud(db: DbDep):
+    """Centros de salud (OpenStreetMap): dónde acudir ante síntomas de intoxicación."""
+    feats = rows(db.conn, """
+        SELECT id, name, coalesce(level, 'Centro de salud') AS tipo, phone, osm_id, is_synthetic AS sintetico,
+               ST_X(geom) AS lon, ST_Y(geom) AS lat
+        FROM health_facility ORDER BY id""")
+    out = []
+    for f in feats:
+        lon, lat = f.pop("lon"), f.pop("lat")
+        out.append({"type": "Feature", "geometry": {"type": "Point", "coordinates": [round(lon, 6), round(lat, 6)]},
+                    "properties": f})
+    return {"type": "FeatureCollection", "fuente": "OpenStreetMap (ODbL)", "features": out}
+
+
 @router.get("/reports")
 def reports(db: DbDep):
     return rows(db.conn, """SELECT h3, kind, count(*) AS n, count(*) FILTER (WHERE status='validada') AS validadas

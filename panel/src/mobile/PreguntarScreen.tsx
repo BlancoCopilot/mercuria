@@ -1,6 +1,6 @@
 import { useChat } from "../lib/chat";
 import { BURBUJA, ChatThread, estadoVoz } from "../components/ChatThread";
-import { Mascot } from "../components/Mascot";
+import { GotaImg } from "../components/GotaImg";
 
 /** Conversación con Gota: el mismo chat de la web (texto y voz), a pantalla completa. */
 export function PreguntarScreen() {
@@ -9,7 +9,7 @@ export function PreguntarScreen() {
   return (
     <div className="m-chat">
       <header className="m-chat-head">
-        <Mascot size={64} mood={chat.mood} label="Gota" />
+        <GotaImg size={72} mood={chat.mood} err={!!chat.err} llamada={chat.voz.activo} label="Gota" />
         <div className="m-chat-titulo">
           <h1>Pregúntale a Gota</h1>
           <p className="small" aria-live="polite">{burbuja}</p>
