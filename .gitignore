@@ -16,6 +16,7 @@ panel/dist/
 .DS_Store
 MercurIA.apk
 scripts/vps.local
+.sync-github*
 
 # Datos crudos: grandes o de terceros (se descargan con los comandos de DATOS.md)
 data/raw/*

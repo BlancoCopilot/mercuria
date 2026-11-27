@@ -27,7 +27,7 @@ echo "== sincronizar"
 rsync -az --delete \
   --exclude '.venv' --exclude '__pycache__' --exclude '.pytest_cache' --exclude 'node_modules' \
   --exclude 'panel/android' --exclude 'panel/android-keys' --exclude 'panel/dist-mobile' --exclude 'panel/dist/descargas' \
-  --exclude 'data/' --exclude 'docker-compose.override.yml' --exclude '.DS_Store' --exclude 'MercurIA.apk' --exclude '*.dump' --exclude 'scripts/vps.local' \
+  --exclude 'data/' --exclude 'docker-compose.override.yml' --exclude '.DS_Store' --exclude 'MercurIA.apk' --exclude '*.dump' --exclude 'scripts/vps.local' --exclude '.git' --exclude '.sync-github*' \
   ./ "$VPS:$DIR/"
 rsync -az data/raw/rag "$VPS:$DIR/data/raw/"
 [ -f MercurIA.apk ] && ssh "$VPS" "mkdir -p $DIR/panel/dist/descargas" && rsync -az MercurIA.apk "$VPS:$DIR/panel/dist/descargas/MercurIA.apk"
