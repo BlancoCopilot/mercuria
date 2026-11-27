@@ -41,6 +41,7 @@ function Nav() {
     { to: "/", label: "Mapa", show: true },
     { to: "/comunidades", label: "Mi comunidad", show: true },
     { to: "/preguntar", label: "Preguntar", show: true },
+    { to: "/informate", label: "Infórmate", show: true },
     { to: "/datos", label: "Datos abiertos", show: true },
     { to: "/aportar", label: "Aportar datos", show: !user || can("investigador") },
     { to: "/panel", label: "Decisión", show: can("autoridad") },
