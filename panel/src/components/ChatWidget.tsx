@@ -2,7 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useChat } from "../lib/chat";
 import { ChatThread, estadoVoz } from "./ChatThread";
-import { Mascot, type Mood } from "./Mascot";
+import type { Mood } from "./Mascot";
+import { GotaImg } from "./GotaImg";
+import { MascotaAnimada } from "./MascotaAnimada";
 
 // Estado corto (una línea) para la cabecera del widget
 const ESTADO: Record<Mood, string> = {
@@ -52,7 +54,7 @@ export function ChatWidget() {
       {open && (
         <div ref={panel} className="chat-panel" role="dialog" aria-modal="false" aria-label="Chat con Gota">
           <header className="chat-panel-head">
-            <Mascot mood={mood} size={58} />
+            <GotaImg mood={mood} size={76} err={!!err} llamada={voz.activo} />
             <div className="chat-panel-title">
               <strong>Gota</strong>
               <span className="small muted" aria-live="polite">{estadoVoz(voz) ?? (err ? "Uy, no pude responder." : ESTADO[mood])}</span>
@@ -72,9 +74,9 @@ export function ChatWidget() {
       {!open && hint && (
         <button className="fab-hint" onClick={abrir}>¿Dudas sobre el mercurio? Pregúntame</button>
       )}
-      <button ref={fab} className="fab" data-open={open} onClick={() => (open ? setOpen(false) : abrir())}
+      <button ref={fab} className="fab fab-pet" data-open={open} onClick={() => (open ? setOpen(false) : abrir())}
         aria-expanded={open} aria-label={open ? "Cerrar chat con Gota" : "Abrir chat: pregúntale a Gota"}>
-        <Mascot mood={open ? mood : "idle"} size={64} label="" />
+        <MascotaAnimada chatAbierto={open} mood={mood} err={err} llamada={voz.activo} ocultarGlobo={!open && hint} />
       </button>
     </>
   );

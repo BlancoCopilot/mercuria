@@ -15,6 +15,7 @@ const MapPage = lazy(() => import("./pages/MapPage"));
 const CommunitiesPage = lazy(() => import("./pages/CommunityPages").then((m) => ({ default: m.CommunitiesPage })));
 const CardPage = lazy(() => import("./pages/CommunityPages").then((m) => ({ default: m.CardPage })));
 const ReportPage = lazy(() => import("./pages/ReportPage"));
+const InformatePage = lazy(() => import("./pages/InformatePage"));
 const ChatPage = lazy(() => import("./pages/ChatPage"));
 const LoginPage = lazy(() => import("./pages/LoginPage"));
 const DecisionPage = lazy(() => import("./pages/DecisionPage"));
@@ -55,6 +56,7 @@ createRoot(document.getElementById("root")!).render(
               <Route path="comunidad/:id" element={<CardPage />} />
               <Route path="denunciar" element={<ReportPage />} />
               <Route path="preguntar" element={<ChatPage />} />
+              <Route path="informate" element={<InformatePage />} />
               <Route path="ingresar" element={<LoginPage />} />
               <Route path="datos" element={<OpenDataPage />} />
               <Route path="aportar" element={<ContributePage />} />

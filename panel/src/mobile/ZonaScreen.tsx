@@ -4,7 +4,8 @@ import { useApi } from "../lib/hooks";
 import { useUbicacion } from "../lib/location";
 import { num } from "../lib/format";
 import { CommunitySearch } from "../components/CommunitySearch";
-import { Drop, Mascot } from "../components/Mascot";
+import { Drop } from "../components/Mascot";
+import { GotaImg } from "../components/GotaImg";
 import { IconAltavoz, IconBuscar, IconCampana, IconCheck, IconParar, IconTelefono, IconUbicar } from "./icons";
 import { abrirAjustes, callar, hablar } from "./native";
 import type { useAlertas } from "./useAlertas";
@@ -288,7 +289,7 @@ function Bienvenida({ buscando, denegado, sinSenal, onUbicar, onBuscar, onElegir
 }) {
   return (
     <div className="m-page m-bienvenida">
-      <Mascot size={150} mood={buscando ? "listening" : "idle"} />
+      <GotaImg size={170} mood={buscando ? "thinking" : "idle"} />
       {buscando ? (
         <>
           <h1>¿Dónde vives?</h1>
