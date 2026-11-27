@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useChat, type Fuente } from "../lib/chat";
-import { Mascot, type Mood } from "./Mascot";
+import type { Mood } from "./Mascot";
+import { GotaImg } from "./GotaImg";
 
 export const TEMAS = [
   { id: null, label: "Todo" }, { id: "peces", label: "Pescado" }, { id: "salud", label: "Salud" },
@@ -51,7 +52,7 @@ export function ChatThread({ compact, autoFocus }: { compact?: boolean; autoFocu
             <div key={i} className="msg msg-user">{t.texto}</div>
           ) : (
             <div key={i} className="msg-row">
-              <span className="avatar"><Mascot size={compact ? 30 : 36} label="Gota" still /></span>
+              <span className="avatar"><GotaImg size={compact ? 34 : 42} label="Gota" still /></span>
               <div className="msg msg-bot">
                 {t.texto}
                 {t.fuentes && t.fuentes.length > 0 && (
@@ -68,7 +69,7 @@ export function ChatThread({ compact, autoFocus }: { compact?: boolean; autoFocu
           ))}
           {busy && (
             <div className="msg-row">
-              <span className="avatar"><Mascot size={compact ? 30 : 36} mood="thinking" label="Gota pensando" /></span>
+              <span className="avatar"><GotaImg size={compact ? 34 : 42} mood="thinking" label="Gota pensando" /></span>
               <div className="msg msg-bot"><span className="skeleton" style={{ display: "block", width: 160, height: 14 }} /></div>
             </div>
           )}

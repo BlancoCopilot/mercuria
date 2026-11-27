@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useChat } from "../lib/chat";
 import { ChatThread } from "./ChatThread";
-import { Mascot, type Mood } from "./Mascot";
+import type { Mood } from "./Mascot";
+import { GotaImg } from "./GotaImg";
 import { MascotaAnimada } from "./MascotaAnimada";
 
 // Estado corto (una línea) para la cabecera del widget
@@ -53,7 +54,7 @@ export function ChatWidget() {
       {open && (
         <div ref={panel} className="chat-panel" role="dialog" aria-modal="false" aria-label="Chat con Gota">
           <header className="chat-panel-head">
-            <Mascot mood={mood} size={58} />
+            <GotaImg mood={mood} size={62} err={!!err} />
             <div className="chat-panel-title">
               <strong>Gota</strong>
               <span className="small muted" aria-live="polite">{err ? "Uy, no pude responder." : ESTADO[mood]}</span>

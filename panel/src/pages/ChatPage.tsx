@@ -1,5 +1,5 @@
 import { PageHead } from "../components/Layout";
-import { Mascot } from "../components/Mascot";
+import { GotaImg } from "../components/GotaImg";
 import { BURBUJA, ChatThread } from "../components/ChatThread";
 import { useChat } from "../lib/chat";
 
@@ -13,7 +13,7 @@ export default function ChatPage() {
       </PageHead>
       <div className="chat-layout">
         <aside className="chat-host" aria-live="polite">
-          <Mascot mood={mood} size={150} />
+          <GotaImg mood={mood} size={170} err={!!err} />
           <p className="host-bubble">{err ? "Uy, no pude responder. Intenta de nuevo." : BURBUJA[mood]}</p>
         </aside>
         <ChatThread />
